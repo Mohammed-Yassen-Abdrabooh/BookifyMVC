@@ -1,4 +1,5 @@
 ﻿@model IEnumerable<Category>
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
 @{
     ViewData["Title"] = "Categories";
 }
@@ -63,31 +64,148 @@
                         </tr>
                     </thead>
                     <tbody>
-                    @foreach (var category in Model)
-                    {
+                        @foreach (var category in Model)
+                        {
 
-                        <tr>
-                            <td>@category.Name</td>
-                            <td>
-                                    <span class="badge badge-light-@(category.IsDeleted ? "danger" : "success")">
-                                       @(category.IsDeleted ? "Deleted" : "Available")
+                            <tr>
+                                <td>@category.Name</td>
+                                <td>
+                                    <span class="badge badge-light-@(category.IsDeleted ? "danger" : "success") js-status">
+                                        @(category.IsDeleted ? "Deleted" : "Available")
                                     </span>
-
-                            </td>
-                            <td>@category.CreatedOn</td>
-                            <td>@category.LastUpdateOn</td>
-                            <td>
-                                <a class="btn btn-sm btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary" asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id">
-                                    <i class="bi text-primary bi-pencil-square"></i>
-                                    Edit
-                                </a>
-
-                            </td>
-                        </tr>
-                    }
+                                </td>
+                                <td>@category.CreatedOn</td>
+                                <td class="js-updated-on">@category.LastUpdateOn</td>
+                                <td>
+                                    <button type="button" class="btn btn-sm btn-icon btn-color-primary btn-active-light-primary" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                        <!--begin::Svg Icon | path: icons/duotune/general/gen024.svg-->
+                                        <span class="svg-icon svg-icon-2">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="24px" height="24px" viewBox="0 0 24 24">
+                                                <g stroke="none" stroke-width="1" fill="none" fill-rule="evenodd">
+                                                    <rect x="5" y="5" width="5" height="5" rx="1" fill="currentColor"></rect>
+                                                    <rect x="14" y="5" width="5" height="5" rx="1" fill="currentColor" opacity="0.3"></rect>
+                                                    <rect x="5" y="14" width="5" height="5" rx="1" fill="currentColor" opacity="0.3"></rect>
+                                                    <rect x="14" y="14" width="5" height="5" rx="1" fill="currentColor" opacity="0.3"></rect>
+                                                </g>
+                                            </svg>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </button>
+                                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3" data-kt-menu="true" style="">
+                                        <!--begin::Menu item-->
+                                        <div class="menu-item px-3 ">
+                                            <a class="menu-item px-3" asp-controller="Category" asp-action="Edit" asp-route-id="@category.Id">
+                                                Edit
+                                            </a>
+                                        </div>
+                                        <!--end::Menu item-->
+                                        <!--begin::Menu item-->
+                                        <div class="menu-item flex-stack px-3">
+                                            <a href="javascript:;" class="menu-item px-3 js-toggle-status" data-id="@category.Id">
+                                                Toggle Status
+                                            </a>
+                                        </div>
+                                        <!--end::Menu item-->
+                                    </div>
+                                </td>
+                            </tr>
+                        }
                     </tbody>
                 </table>
             </div>
         }
     </div>
 </div>
+
+<input type="hidden" name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken" />
+
+@section Scripts {
+    <script>
+        $(document).ready(function(){
+            $('.js-toggle-status').on('click',function(){
+                const $menu = $(this).closest('.menu-sub-dropdown');
+                      $menu.hide();
+                var btn = $(this);
+                var id = btn.data('id');
+                // console.log(id);
+                // This Alert To Detect if Surely want To Change Status "Using Bootboxjs" as a nice shape from Default
+                bootbox.confirm({
+                    message: 'Are you sure you want to toggle the status of this category?',
+                    buttons: {
+                        confirm: {
+                            label: 'Yes',
+                            className: 'btn-danger'
+                        },
+                        cancel: {
+                            label: 'No',
+                            className: 'btn-secondary'
+                        }
+                    },
+                    callback: function (result) {
+                        if(result){
+                            $.post({
+                                //if you write URL not url ==> it will Get Error 404
+                                url: '/Category/ToggleStatus/' + id,
+                                data: {
+                                    __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                                },
+                                success: function(lastUpdatedOn){
+                                    var row = btn.parents('tr');
+                                    var status = row.find('.js-status');
+                                    var newStatus = status.text().trim() === 'Deleted' ? 'Available' : 'Deleted';
+                                    status.text(newStatus).toggleClass('badge-light-success badge-light-danger');
+                                    row.find('.js-updated-on').html(lastUpdatedOn);
+                                    // Add Animation on the Row <tr> using Animate.css
+                                    row.addClass('animate__animated animate__fadeIn');
+                                    setTimeout(function() {
+                                        row.removeClass('animate__animated animate__fadeIn');
+                                    }, 1000);
+                                    /// Toastr Library to show notification for successfuly or error  action
+                                    /// if(newStatus === 'Deleted') {
+                                    ///     toastr.error('Category has been deleted successfully.', 'Deleted');
+                                    /// } else {
+                                    ///     toastr.success('Category has been restored successfully.', 'Available');
+                                    /// }
+                                    // using Sweatalert2
+                                    if(newStatus === 'Deleted'){
+                                        Swal.fire({
+                                            icon: "warning",
+                                            iconColor: "#f1416c",
+                                            title: "Success",
+                                            text: "Category has been Deleted Now ",
+                                            customClass: {
+                                                confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
+                                            }
+                                        });
+                                    }else {
+
+                                        Swal.fire({
+                                            icon: "success",
+                                            title: "Success",
+                                            text: "Category has been Available Now ",
+                                            customClass: {
+                                                confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
+                                            }
+                                        });
+                                    };
+                                    
+                                },
+                                error: function(){
+                                    Swal.fire({
+                                        icon: "error",
+                                        title: "Oops...",
+                                        text: "Something went wrong!",
+                                        customClass: {
+                                            confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
+                                        }
+                                    });
+                                }
+                            });
+                        }
+                    }
+                });
+            })
+        })
+    </script>
+}
+

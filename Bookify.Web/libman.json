@@ -19,6 +19,22 @@
         "js/bootstrap.js.map",
         "js/bootstrap.min.js.map"
       ]
+    },
+    {
+      "library": "bootbox.js@6.0.4",
+      "destination": "wwwroot/lib/bootbox.js/"
+    },
+    {
+      "library": "animate.css@4.1.1",
+      "destination": "wwwroot/lib/animate.css/",
+      "files": [
+        "animate.min.css",
+        "animate.css"
+      ]
+    },
+    {
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr.js/"
     }
   ]
 }

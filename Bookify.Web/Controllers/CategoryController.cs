@@ -2,6 +2,7 @@
 using Bookify.Web.Core.ViewModels;
 using Bookify.Web.Data;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 
 namespace Bookify.Web.Controllers
 {
@@ -16,9 +17,9 @@ namespace Bookify.Web.Controllers
 
 
         public IActionResult Index()
-        {
+        {   // put AsNoTracking() to not track changes in this query, it is read-only operation.
             //TODO: Add View Model For Category
-            var Categories = _dbContext.Categories/*.Where(c=>c.IsDeleted == false)*/.ToList(); // Get All Categories Where IsDeleted = False "when un Comm Where ==> is not show it in View Index"
+            var Categories = _dbContext.Categories/*.Where(c=>c.IsDeleted == false)*/.AsNoTracking().ToList(); // Get All Categories Where IsDeleted = False "when un Comm Where ==> is not show it in View Index"
 
             return View(Categories);
         }
@@ -31,12 +32,12 @@ namespace Bookify.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Create(CategoryFormViewModel model)
         {
-            if(!ModelState.IsValid)
-                return View("Form",model);
+            if (!ModelState.IsValid)
+                return View("Form", model);
 
             var category = new Category
             {
-                Name= model.Name,
+                Name = model.Name,
             };
             _dbContext.Categories.Add(category);
             _dbContext.SaveChanges();
@@ -46,8 +47,8 @@ namespace Bookify.Web.Controllers
         public IActionResult Edit(int id)
         {
             var Categ = _dbContext.Categories.Find(id);
-            
-            if(Categ is null)
+
+            if (Categ is null)
                 return NotFound();
 
             var ViewModel = new CategoryFormViewModel
@@ -77,12 +78,39 @@ namespace Bookify.Web.Controllers
             Categ.LastUpdateOn = DateTime.Now;
             _dbContext.Categories.Update(Categ);
             _dbContext.SaveChanges();
-
             return RedirectToAction(nameof(Index));
 
 
         }
 
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleStatus(int id)
+        {
+            var Categ = _dbContext.Categories.Find(id);
+            if (Categ is null)
+                return NotFound();
 
+
+            ///if(Categ.IsDeleted)
+            ///{
+            ///    // If the category is already deleted, we can restore it
+            ///    Categ.IsDeleted = false;
+            ///}
+            ///else
+            ///{
+            ///    // If the category is not deleted, we mark it as deleted
+            ///    Categ.IsDeleted = true;
+            ///}
+
+
+            Categ.IsDeleted = !Categ.IsDeleted;// Toggle the IsDeleted status like if condition
+            Categ.LastUpdateOn = DateTime.Now;
+
+            _dbContext.Categories.Update(Categ);
+            _dbContext.SaveChanges();
+            return Ok(Categ.LastUpdateOn.ToString());
+
+        }
     }
 }
