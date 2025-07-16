@@ -41,6 +41,7 @@ namespace Bookify.Web.Controllers
             };
             _dbContext.Categories.Add(category);
             _dbContext.SaveChanges();
+            TempData["SuccessMessage"] = $"Added '{model.Name}' Category Successfully";
             return RedirectToAction(nameof(Index));
         }
 
@@ -56,7 +57,6 @@ namespace Bookify.Web.Controllers
                 Id = Categ.Id,
                 Name = Categ.Name,
             };
-
             return View("Form", ViewModel);
 
 
@@ -66,6 +66,7 @@ namespace Bookify.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(CategoryFormViewModel model)
         {
+            
             if (!ModelState.IsValid)
                 return View("Form", model);
 
@@ -74,10 +75,12 @@ namespace Bookify.Web.Controllers
             if (Categ is null)
                 return NotFound();
 
+            TempData["SuccessMessage"] = $"Editing Category Name From '{Categ.Name}' To '{model.Name}'";
             Categ.Name = model.Name;
             Categ.LastUpdateOn = DateTime.Now;
             _dbContext.Categories.Update(Categ);
             _dbContext.SaveChanges();
+
             return RedirectToAction(nameof(Index));
 
 
@@ -87,11 +90,10 @@ namespace Bookify.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult ToggleStatus(int id)
         {
+
             var Categ = _dbContext.Categories.Find(id);
             if (Categ is null)
                 return NotFound();
-
-
             ///if(Categ.IsDeleted)
             ///{
             ///    // If the category is already deleted, we can restore it

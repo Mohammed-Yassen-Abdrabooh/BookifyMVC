@@ -168,37 +168,16 @@
                                     /// }
                                     // using Sweatalert2
                                     if(newStatus === 'Deleted'){
-                                        Swal.fire({
-                                            icon: "warning",
-                                            iconColor: "#f1416c",
-                                            title: "Success",
-                                            text: "Category has been Deleted Now ",
-                                            customClass: {
-                                                confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
-                                            }
-                                        });
+                                        var DeleteMessage = "Category has been Deleted Now "
+                                        ShowDeletedMessage(DeleteMessage);
                                     }else {
-
-                                        Swal.fire({
-                                            icon: "success",
-                                            title: "Success",
-                                            text: "Category has been Available Now ",
-                                            customClass: {
-                                                confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
-                                            }
-                                        });
+                                        var SuccessMessage = "Category has been Available Now "
+                                        ShowSuccessMessage(SuccessMessage);
                                     };
                                     
                                 },
                                 error: function(){
-                                    Swal.fire({
-                                        icon: "error",
-                                        title: "Oops...",
-                                        text: "Something went wrong!",
-                                        customClass: {
-                                            confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
-                                        }
-                                    });
+                                    ShowErrorMessage();
                                 }
                             });
                         }
