@@ -64,8 +64,12 @@
 		<!--end::Svg Icon-->
 	</div>
 	<!--end::Scrolltop-->
+    <!-- This is used to display success messages after actions like create, edit, delete, etc. all of this Was Run Using Toastr but Now Using SweatAlert2-->
+	<!-- <span id="ActionMessage" class="d-none">//@TempData//["SuccessMessage"]</span> -->
+	<!--Adding Modal partial View To Render Form for Edit or create in it using Ajax -->
+    <partial name="_Modal" />
+
     <!--begin::Javascript-->
-	<span id="ActionMessage" class="d-none">@TempData["SuccessMessage"]</span>
     <script>var hostUrl = "assets/";</script>
     <!--begin::Global Javascript Bundle(mandatory for all pages)-->
     <script src="~/assets/js/plugins.bundle.js"></script>

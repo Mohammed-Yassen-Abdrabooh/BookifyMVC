@@ -1,6 +1,7 @@
 ﻿using Bookify.Web.Core.Models;
 using Bookify.Web.Core.ViewModels;
 using Bookify.Web.Data;
+using Bookify.Web.Filters;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
@@ -24,16 +25,18 @@ namespace Bookify.Web.Controllers
             return View(Categories);
         }
 
+        [HttpGet]
+        [AjaxOnly]
         public IActionResult Create()
         {
-            return View("Form");
+            return PartialView("_Form");
         }
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult Create(CategoryFormViewModel model)
         {
             if (!ModelState.IsValid)
-                return View("Form", model);
+                return BadRequest();
 
             var category = new Category
             {
@@ -41,10 +44,10 @@ namespace Bookify.Web.Controllers
             };
             _dbContext.Categories.Add(category);
             _dbContext.SaveChanges();
-            TempData["SuccessMessage"] = $"Added '{model.Name}' Category Successfully";
-            return RedirectToAction(nameof(Index));
+            return PartialView("_CategoryRow",category);
         }
-
+        [HttpGet]
+        [AjaxOnly] // this Attribute is used to ensure that this action can only be called via AJAX requests.
         public IActionResult Edit(int id)
         {
             var Categ = _dbContext.Categories.Find(id);
@@ -57,7 +60,7 @@ namespace Bookify.Web.Controllers
                 Id = Categ.Id,
                 Name = Categ.Name,
             };
-            return View("Form", ViewModel);
+            return PartialView("_Form", ViewModel);
 
 
         }
@@ -68,20 +71,19 @@ namespace Bookify.Web.Controllers
         {
             
             if (!ModelState.IsValid)
-                return View("Form", model);
+                return BadRequest();
 
             var Categ = _dbContext.Categories.Find(model.Id);
 
             if (Categ is null)
                 return NotFound();
 
-            TempData["SuccessMessage"] = $"Editing Category Name From '{Categ.Name}' To '{model.Name}'";
             Categ.Name = model.Name;
             Categ.LastUpdateOn = DateTime.Now;
             _dbContext.Categories.Update(Categ);
             _dbContext.SaveChanges();
 
-            return RedirectToAction(nameof(Index));
+            return PartialView("_CategoryRow", Categ);
 
 
         }

@@ -1,0 +1,55 @@
+﻿@model CategoryFormViewModel
+<!--
+ @* @{
+    ViewData["Title"] = $"{(Model?.Id > 0 ? "Edit" : "Add" )}Category";
+} *@
+
+<div class="card shadow-sm">
+    <div class="card-header">
+        <h3 class="card-title">@(Model?.Id > 0 ? "Edit" : "Add") Category</h3>
+    </div>
+    <div class="card-body">
+        <div class="row">
+            <div class="col-md-6">
+               @* in Default Work Put the form here *@
+</div>
+</div>
+</div>
+</div> -->
+
+@* Need To Convert original Form To AjaxForm 
+       data-ajax-method ="post"==============> To Make Form Method Post
+       data-ajax ="true", ==============> To Make Form Ajax
+       data-ajax-success ="ShowSuccessMessage()",=============> To Show Success Message After Form Submit
+       data-ajax-failure ="ShowErrorMessage()"=============> To Show Error Message After Form Submit
+   Need To Add Client Side Validation ==> To Run Validation in the Modal Not in Form
+       go to wwwroot
+       and add Client Side Library in Lib Folder ==> "jquery-ajax-unobtrusive@3.2.6"
+       and go to add it in _ValidationScriptsPartial.cshtml
+
+*@
+<form  asp-action="@(Model?.Id>0 ? "Edit" : "Create")"
+       data-ajax-method ="post"
+       data-ajax ="true"
+       data-ajax-success="OnModalSuccess"
+       data-ajax-failure ="ShowErrorMessage">
+    @if (Model?.Id > 0)
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    <!--begin::Input group-->
+    <div class="mb-3">
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control " asp-for="Name" placeholder="Name of New Category" />
+            <label asp-for="Name"></label>
+        </div>
+        <span asp-validation-for="Name" class="ms-3 text-danger d-block"></span>
+    </div>
+@*     <button class="btn btn-primary rounded-pill" type="submit">
+        <i class="bi bi-check2"></i>
+        Save
+    </button> *@
+    <partial name="_ModalFooterBtn"/>
+    <!--end::Input group-->
+</form>
+
