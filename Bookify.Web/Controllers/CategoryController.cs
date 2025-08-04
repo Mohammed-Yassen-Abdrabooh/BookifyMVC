@@ -116,5 +116,15 @@ namespace Bookify.Web.Controllers
             return Ok(Categ.LastUpdateOn.ToString());
 
         }
+
+        // Create Action To Prevent User To Add Duplicate Category Name by Client Side Validation
+        public IActionResult AllowItem (CategoryFormViewModel model)
+        {
+            var isExist = _dbContext.Categories.Any(c => c.Name == model.Name);
+
+            // If the category name already exists, return false ==> then it Run an Error Message
+            return Json(!isExist); // Return true if the category name does not exist, false otherwise            
+
+        }
     }
 }

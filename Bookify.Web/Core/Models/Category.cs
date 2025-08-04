@@ -1,6 +1,10 @@
 ﻿// usinng namespace for data annotation but it imports here by GlobalUsings.cs
+using Microsoft.EntityFrameworkCore;
+
 namespace Bookify.Web.Core.Models
 {
+    // Prevent DataBase To Store Dupplicate Values in Name Column "Now You can Not Add Dupplicate Category From DB or from Application"
+    [Index(nameof(Name),IsUnique =true)]
     public class Category
     {
         public int Id { get; set; }

@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc.ActionConstraints;
 
 namespace Bookify.Web.Filters
 {
+    // This attribute is used to ensure that an action method can only be accessed via an AJAX request.
+    // form Application Not Write The Actions in URL box
     public class AjaxOnlyAttribute : ActionMethodSelectorAttribute
     {
         public override bool IsValidForRequest(RouteContext routeContext, ActionDescriptor action)
