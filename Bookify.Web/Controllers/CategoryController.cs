@@ -120,10 +120,12 @@ namespace Bookify.Web.Controllers
         // Create Action To Prevent User To Add Duplicate Category Name by Client Side Validation
         public IActionResult AllowItem (CategoryFormViewModel model)
         {
-            var isExist = _dbContext.Categories.Any(c => c.Name == model.Name);
+            // Upgrade it to Select The Category Which Has The Same Name Comming From Model "To Upgrade ==> if You Edit Categoty but Not Change Name in Another Modules Which Comming in Next Days" 
+            var category = _dbContext.Categories.SingleOrDefault(c=>c.Name==model.Name);
+            var isAllowed =category is null || category.Id.Equals(model.Id); // If the category is null, it means the name does not exist in the database
 
             // If the category name already exists, return false ==> then it Run an Error Message
-            return Json(!isExist); // Return true if the category name does not exist, false otherwise            
+            return Json(isAllowed); // Return true if the category name does not exist, false otherwise            
 
         }
     }

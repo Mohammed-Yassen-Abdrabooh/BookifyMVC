@@ -31,8 +31,10 @@
 <form  asp-action="@(Model?.Id>0 ? "Edit" : "Create")"
        data-ajax-method ="post"
        data-ajax ="true"
+       data-ajax-begin="OnModalBegin"
        data-ajax-success="OnModalSuccess"
-       data-ajax-failure ="ShowErrorMessage">
+       data-ajax-failure ="ShowErrorMessage"
+       data-ajax-complete="OnModalComplete">
     @if (Model?.Id > 0)
     {
         <input type="hidden" asp-for="Id" />

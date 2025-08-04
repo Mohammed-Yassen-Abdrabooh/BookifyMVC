@@ -39,6 +39,9 @@ function ShowErrorMessage(msg = "Something went wrong!") {
     });
 }
 
+function OnModalBegin() {
+    $('body :submit').attr('disabled', 'disabled').attr("data-kt-indicator", "on"); // Disable all submit buttons to prevent multiple submissions
+}
 function OnModalSuccess(row) {
 
     ShowSuccessMessage();
@@ -63,6 +66,9 @@ function OnModalSuccess(row) {
     KTMenu.initHandlers(); // Re-initialize the menu handlers "Must do it if ypu use Metronic Theme"
 }
 
+function OnModalComplete() {
+    $('body :submit').removeAttr('disabled'); // Disable all submit buttons to prevent multiple submissions
+}
 
 //DataTables:
 // To Execlude Action Column To Get in Exported Files
