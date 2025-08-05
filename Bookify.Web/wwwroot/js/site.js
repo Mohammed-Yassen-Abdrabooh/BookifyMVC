@@ -67,7 +67,7 @@ function OnModalSuccess(row) {
 }
 
 function OnModalComplete() {
-    $('body :submit').removeAttr('disabled'); // Disable all submit buttons to prevent multiple submissions
+    $('body :submit').removeAttr('disabled').removeAttr("data-kt-indicator"); // Disable all submit buttons to prevent multiple submissions
 }
 
 //DataTables:

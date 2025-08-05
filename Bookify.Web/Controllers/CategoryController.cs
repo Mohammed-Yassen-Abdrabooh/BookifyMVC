@@ -19,8 +19,15 @@ namespace Bookify.Web.Controllers
 
         public IActionResult Index()
         {   // put AsNoTracking() to not track changes in this query, it is read-only operation.
-            //TODO: Add View Model For Category
-            var Categories = _dbContext.Categories/*.Where(c=>c.IsDeleted == false)*/.AsNoTracking().ToList(); // Get All Categories Where IsDeleted = False "when un Comm Where ==> is not show it in View Index"
+            //var Categories = _dbContext.Categories/*.Where(c=>c.IsDeleted == false)*/.AsNoTracking().ToList(); // Get All Categories Where IsDeleted = False "when un Comm Where ==> is not show it in View Index"
+            var Categories = _dbContext.Categories.Select(c=> new CategoryViewModel()
+            {
+                Id = c.Id,
+                Name = c.Name,
+                IsDeleted = c.IsDeleted,
+                CreatedOn = c.CreatedOn,
+                LastUpdateOn = c.LastUpdateOn
+            }).AsNoTracking().ToList();
 
             return View(Categories);
         }
@@ -44,7 +51,17 @@ namespace Bookify.Web.Controllers
             };
             _dbContext.Categories.Add(category);
             _dbContext.SaveChanges();
-            return PartialView("_CategoryRow",category);
+
+            var categViewModel = new CategoryViewModel()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                IsDeleted = category.IsDeleted,
+                CreatedOn = category.CreatedOn,
+                LastUpdateOn = category.LastUpdateOn
+            };
+
+            return PartialView("_CategoryRow", categViewModel);
         }
         [HttpGet]
         [AjaxOnly] // this Attribute is used to ensure that this action can only be called via AJAX requests.
@@ -73,17 +90,26 @@ namespace Bookify.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var Categ = _dbContext.Categories.Find(model.Id);
+            var category = _dbContext.Categories.Find(model.Id);
 
-            if (Categ is null)
+            if (category is null)
                 return NotFound();
 
-            Categ.Name = model.Name;
-            Categ.LastUpdateOn = DateTime.Now;
-            _dbContext.Categories.Update(Categ);
+            category.Name = model.Name;
+            category.LastUpdateOn = DateTime.Now;
+            _dbContext.Categories.Update(category);
             _dbContext.SaveChanges();
 
-            return PartialView("_CategoryRow", Categ);
+            var categViewModel = new CategoryViewModel()
+            {
+                Id = category.Id,
+                Name = category.Name,
+                IsDeleted = category.IsDeleted,
+                CreatedOn = category.CreatedOn,
+                LastUpdateOn = category.LastUpdateOn
+            };
+
+            return PartialView("_CategoryRow", categViewModel);
 
 
         }
