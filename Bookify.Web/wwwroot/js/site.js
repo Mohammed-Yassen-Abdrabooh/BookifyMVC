@@ -11,7 +11,7 @@ function ShowSuccessMessage(msg = "Action Done Successfully") {
         title: "Success",
         text: msg,
         customClass: {
-            confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
+            confirmButton: "btn btn-primary",
         }
     })
 }
@@ -23,7 +23,7 @@ function ShowDeletedMessage(msg = "Delete Done Successfully") {
         title: "Deleted Success",
         text: msg,
         customClass: {
-            confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
+            confirmButton: "btn btn-primary",
         }
     });
 }
@@ -34,7 +34,7 @@ function ShowErrorMessage(msg = "Something went wrong!") {
         title: "Oops...",
         text: msg,
         customClass: {
-            confirmButton: "btn btn-outline btn-outline-dashed btn-outline-primary btn-active-light-primary",
+            confirmButton: "btn btn-primary",
         }
     });
 }
@@ -92,7 +92,6 @@ var KTDatatables = function () {
         // Init datatable --- more info on datatables: https://datatables.net/manual/
         datatable = $(table).DataTable({
             "info": false,
-            'order': [],
             'pageLength': 10,
         });
     }
@@ -199,7 +198,6 @@ $(document).ready(function () {
 
         if (btn.data("update") !== undefined) {
             updatedRow = btn.parents("tr");
-            console.log(updatedRow);
         }
 
 

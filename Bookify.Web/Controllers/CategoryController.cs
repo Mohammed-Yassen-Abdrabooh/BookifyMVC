@@ -1,35 +1,36 @@
-﻿using Bookify.Web.Core.Models;
-using Bookify.Web.Core.ViewModels;
-using Bookify.Web.Data;
-using Bookify.Web.Filters;
-using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
+﻿
 
 namespace Bookify.Web.Controllers
 {
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
+        private readonly IMapper _mapper;
 
-        public CategoryController(ApplicationDbContext dbContext)
+        public CategoryController(ApplicationDbContext dbContext,IMapper mapper)
         {
             _dbContext = dbContext;
+            _mapper = mapper;
         }
 
 
         public IActionResult Index()
         {   // put AsNoTracking() to not track changes in this query, it is read-only operation.
             //var Categories = _dbContext.Categories/*.Where(c=>c.IsDeleted == false)*/.AsNoTracking().ToList(); // Get All Categories Where IsDeleted = False "when un Comm Where ==> is not show it in View Index"
-            var Categories = _dbContext.Categories.Select(c=> new CategoryViewModel()
-            {
-                Id = c.Id,
-                Name = c.Name,
-                IsDeleted = c.IsDeleted,
-                CreatedOn = c.CreatedOn,
-                LastUpdateOn = c.LastUpdateOn
-            }).AsNoTracking().ToList();
+            // Remove Manual Mapping And Use AutoMapper
+            //var Categories = _dbContext.Categories.Select(c=> new CategoryViewModel()
+            //{
+            //    Id = c.Id,
+            //    Name = c.Name,
+            //    IsDeleted = c.IsDeleted,
+            //    CreatedOn = c.CreatedOn,
+            //    LastUpdateOn = c.LastUpdateOn
+            //}).AsNoTracking().ToList();
+            var Categories = _dbContext.Categories.AsNoTracking().ToList();
 
-            return View(Categories);
+            var categViewModel = _mapper.Map<IEnumerable<CategoryViewModel>>(Categories);
+
+            return View(categViewModel);
         }
 
         [HttpGet]
@@ -45,21 +46,11 @@ namespace Bookify.Web.Controllers
             if (!ModelState.IsValid)
                 return BadRequest();
 
-            var category = new Category
-            {
-                Name = model.Name,
-            };
+            var category = _mapper.Map<Category>(model); // Use AutoMapper to map the model to the entity
             _dbContext.Categories.Add(category);
             _dbContext.SaveChanges();
 
-            var categViewModel = new CategoryViewModel()
-            {
-                Id = category.Id,
-                Name = category.Name,
-                IsDeleted = category.IsDeleted,
-                CreatedOn = category.CreatedOn,
-                LastUpdateOn = category.LastUpdateOn
-            };
+            var categViewModel = _mapper.Map<CategoryViewModel>(category);
 
             return PartialView("_CategoryRow", categViewModel);
         }
@@ -72,11 +63,8 @@ namespace Bookify.Web.Controllers
             if (Categ is null)
                 return NotFound();
 
-            var ViewModel = new CategoryFormViewModel
-            {
-                Id = Categ.Id,
-                Name = Categ.Name,
-            };
+            var ViewModel = _mapper.Map<CategoryFormViewModel>(Categ);
+
             return PartialView("_Form", ViewModel);
 
 
@@ -95,19 +83,13 @@ namespace Bookify.Web.Controllers
             if (category is null)
                 return NotFound();
 
-            category.Name = model.Name;
+            category = _mapper.Map(model, category); 
             category.LastUpdateOn = DateTime.Now;
+
             _dbContext.Categories.Update(category);
             _dbContext.SaveChanges();
 
-            var categViewModel = new CategoryViewModel()
-            {
-                Id = category.Id,
-                Name = category.Name,
-                IsDeleted = category.IsDeleted,
-                CreatedOn = category.CreatedOn,
-                LastUpdateOn = category.LastUpdateOn
-            };
+            var categViewModel = _mapper.Map<CategoryViewModel>(category);
 
             return PartialView("_CategoryRow", categViewModel);
 
