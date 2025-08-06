@@ -7,7 +7,7 @@ namespace Bookify.Web.Controllers
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
 
-        public CategoryController(ApplicationDbContext dbContext,IMapper mapper)
+        public CategoryController(ApplicationDbContext dbContext, IMapper mapper)
         {
             _dbContext = dbContext;
             _mapper = mapper;
@@ -74,7 +74,7 @@ namespace Bookify.Web.Controllers
         [ValidateAntiForgeryToken]
         public IActionResult Edit(CategoryFormViewModel model)
         {
-            
+
             if (!ModelState.IsValid)
                 return BadRequest();
 
@@ -83,7 +83,7 @@ namespace Bookify.Web.Controllers
             if (category is null)
                 return NotFound();
 
-            category = _mapper.Map(model, category); 
+            category = _mapper.Map(model, category);
             category.LastUpdateOn = DateTime.Now;
 
             _dbContext.Categories.Update(category);
@@ -126,11 +126,11 @@ namespace Bookify.Web.Controllers
         }
 
         // Create Action To Prevent User To Add Duplicate Category Name by Client Side Validation
-        public IActionResult AllowItem (CategoryFormViewModel model)
+        public IActionResult AllowItem(CategoryFormViewModel model)
         {
             // Upgrade it to Select The Category Which Has The Same Name Comming From Model "To Upgrade ==> if You Edit Categoty but Not Change Name in Another Modules Which Comming in Next Days" 
-            var category = _dbContext.Categories.SingleOrDefault(c=>c.Name==model.Name);
-            var isAllowed =category is null || category.Id.Equals(model.Id); // If the category is null, it means the name does not exist in the database
+            var category = _dbContext.Categories.SingleOrDefault(c => c.Name == model.Name);
+            var isAllowed = category is null || category.Id.Equals(model.Id); // If the category is null, it means the name does not exist in the database
 
             // If the category name already exists, return false ==> then it Run an Error Message
             return Json(isAllowed); // Return true if the category name does not exist, false otherwise            

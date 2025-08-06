@@ -1,6 +1,4 @@
-﻿using Bookify.Web.Core.Models;
-using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 
 namespace Bookify.Web.Data
 {
@@ -10,7 +8,7 @@ namespace Bookify.Web.Data
             : base(options)
         {
         }
-
+        public DbSet<Author> Authors { get; set; }
         public DbSet<Category> Categories { get; set; }
 
 
@@ -18,7 +16,8 @@ namespace Bookify.Web.Data
 
         protected override void OnModelCreating(ModelBuilder builder)
         {
-            builder.Entity<Category>().Property(e=>e.CreatedOn).HasDefaultValueSql("GETDATE()"); // We Use it to Put Date now for this Prop in SQL
+            builder.Entity<Author>().Property(a => a.CreatedOn).HasDefaultValueSql("GETDATE()"); // We Use it to Put Date now for this Prop in SQL
+            builder.Entity<Category>().Property(e => e.CreatedOn).HasDefaultValueSql("GETDATE()"); // We Use it to Put Date now for this Prop in SQL
             base.OnModelCreating(builder);
         }
     }

@@ -62,8 +62,8 @@ function OnModalSuccess(row) {
     // old way for Using jQuery to append new row to table body
     // $("tbody").append(item);
 
-    KTMenu.init(); // Re-initialize the menu after adding new item "Must do it if ypu use Metronic Theme"
-    KTMenu.initHandlers(); // Re-initialize the menu handlers "Must do it if ypu use Metronic Theme"
+    KTMenu.init(); // Re-initialize the menu after adding new item "Must do it if you use Metronic Theme"
+    KTMenu.initHandlers(); // Re-initialize the menu handlers "Must do it if you use Metronic Theme"
 }
 
 function OnModalComplete() {
@@ -229,7 +229,7 @@ $(document).ready(function () {
         // console.log(id);
         // This Alert To Detect if Surely want To Change Status "Using Bootboxjs" as a nice shape from Default
         bootbox.confirm({
-            message: 'Are you sure you want to toggle the status of this category?',
+            message: 'Are you sure you want to toggle the status of this Item?',
             buttons: {
                 confirm: {
                     label: 'Yes',
@@ -267,10 +267,10 @@ $(document).ready(function () {
                             /// }
                             // using Sweatalert2
                             if (newStatus === 'Deleted') {
-                                var DeleteMessage = "Category has been Deleted Now "
+                                var DeleteMessage = "This Item has been Deleted Now "
                                 ShowDeletedMessage(DeleteMessage);
                             } else {
-                                var SuccessMessage = "Category has been Available Now "
+                                var SuccessMessage = "This Item has been Available Now "
                                 ShowSuccessMessage(SuccessMessage);
                             };
 

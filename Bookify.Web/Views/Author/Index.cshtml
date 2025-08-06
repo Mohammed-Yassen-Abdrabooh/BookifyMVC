@@ -1,7 +1,7 @@
-﻿@model IEnumerable<CategoryViewModel>
+﻿@model IEnumerable<AuthorViewModel>
 @inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
 @{
-    ViewData["Title"] = "Categories";
+    ViewData["Title"] = "Authors";
 }
 
 @section PluginsStyle {
@@ -15,9 +15,9 @@
             <div class="symbol-label fs-2 fw-semibold text-success">
                 <!--begin::Svg Icon | path: icons/duotune/general/gen002.svg-->
                 <span class="svg-icon svg-icon-2 svg-icon-primary">
-                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                        <path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="currentColor" />
-                        <path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="currentColor" />
+                    <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-vcard" viewBox="0 0 16 16">
+                        <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5" />
+                        <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z" />
                     </svg>
                 </span>
                 <!--end::Svg Icon-->
@@ -26,7 +26,7 @@
         <!--end:Icon-->
         <!--begin::Content-->
         <div class="pe-0 pe-sm-10">
-            <h3 class="mb-1">Categories</h3>
+            <h3 class="mb-1">Authors</h3>
         </div>
         <!--end::Content-->
     </div>
@@ -34,7 +34,7 @@
 
     <div class="card-toolbar">
         <a href="javascript:;" class="btn btn-sm btn-primary js-render-modal"
-           data-title="Add Category" data-url="/Category/Create">
+           data-title="Add Author" data-url="/Author/Create">
             <i class="bi bi-plus-square-dotted"></i>
             Add
         </a>
@@ -45,11 +45,11 @@
 
 
 <div class="card shadow-sm">
-    <partial name="_DataTableCardHeader" />
+    <partial name="_DataTableCardHeader"/>
     <div class="card-body pt-0">
         <!-- Remove Check on The Model if(!Model.Any()) because The DataTable Will Do it -->
         <div class="table-responsive">
-            <table class="table table-row-dashed table-row-gray-300 gy-7 js-datatables" data-document-title="Categories">
+            <table class="table table-row-dashed table-row-gray-300 gy-7 js-datatables" data-document-title="Authors">
                 <thead>
                     <tr class="fw-bold fs-6 text-gray-800">
                         <th>Name</th>
@@ -60,10 +60,10 @@
                     </tr>
                 </thead>
                 <tbody>
-                    @foreach (var category in Model)
+                    @foreach (var author in Model)
                     {
 
-                        <partial name="_CategoryRow" model="category" />
+                        <partial name="_AuthorRow" model="author" />
                     }
                 </tbody>
             </table>
@@ -81,11 +81,11 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial" />
     <!--Handel Js Code Which Written here in View To Write it in External Js File and Put only Reference Here-->
-        <!-- move The Configuration For DataTable to site.js to Modify in one Place and Not Repeat Code in another Modules -->
-        <!-- move The Code For ToggleStatus From External File To The General in site.js because it do it only and can i Use it ia another Modules without Repeat it -->
-
+    <!-- move The Configuration For DataTable to site.js to Modify in one Place and Not Repeat Code in another Modules -->
+    <!-- move The Code For ToggleStatus From External File To The General in site.js because it do it only and can i Use it ia another Modules without Repeat it -->
     <!-- Now I Dont need This External File And i Delete it becaues i Moved Contains code To site.js
         <script src="~/assets/js/category.js" asp-append-version="true"></script>
     -->
 }
+
 
