@@ -8,7 +8,8 @@ namespace Bookify.Web.Core.Models
         public int Id { get; set; }
         [MaxLength(100)]
         public string Name { get; set; } = null!; // Using null-forgiving operator to indicate that Name will not be null
-
+        // Navigation property for many-to-many relationship with Book
+        public ICollection<BookCategory> Books { get; set; } = new List<BookCategory>();
 
     }
 }
