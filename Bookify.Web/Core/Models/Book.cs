@@ -5,7 +5,7 @@
     {
         public int Id { get; set; }
         [MaxLength(500)]
-        public string? Title { get; set; } = null!;
+        public string Title { get; set; } = null!;
         public int AuthorId { get; set; } // Foreign Key to Author
         public Author? Author { get; set; }
         [MaxLength(500)]

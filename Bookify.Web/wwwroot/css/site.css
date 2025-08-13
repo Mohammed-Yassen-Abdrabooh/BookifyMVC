@@ -16,3 +16,16 @@ html {
 body {
   margin-bottom: 60px;
 }
+
+/*Start Override Theme*/
+.form-floating > .form-select {
+    padding-bottom:0.225rem;
+}
+/*End Override Theme*/
+
+/*Start Override image Preview For Create New Book*/
+.img-thumbnail {
+    max-height: 250px;
+    max-width: 350px;
+}
+/*End Override image Preview For Create New Book*/

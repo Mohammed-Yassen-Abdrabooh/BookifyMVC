@@ -20,6 +20,7 @@ namespace Bookify.Web.Data
         {
             builder.Entity<BookCategory>().HasKey(e => new {e.BookId , e.CategoryId });// Composite Key for BookCategory
             builder.Entity<Author>().Property(a => a.CreatedOn).HasDefaultValueSql("GETDATE()"); // We Use it to Put Date now for this Prop in SQL
+            builder.Entity<Book>().Property(b => b.CreatedOn).HasDefaultValueSql("GETDATE()"); // We Use it to Put Date now for this Prop in SQL
             builder.Entity<Category>().Property(e => e.CreatedOn).HasDefaultValueSql("GETDATE()"); // We Use it to Put Date now for this Prop in SQL
             base.OnModelCreating(builder);
         }

@@ -1,61 +1,75 @@
 ﻿<div id="kt_aside" class="aside card" data-kt-drawer="true" data-kt-drawer-name="aside" data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true" data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="start" data-kt-drawer-toggle="#kt_aside_toggle">
-	<!--begin::Aside menu-->
-	<div class="aside-menu flex-column-fluid px-4">
-		<!--begin::Aside Menu-->
-		<div class="hover-scroll-overlay-y my-5 pe-4 me-n4" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="{default: '#kt_aside_footer', lg: '#kt_header, #kt_aside_footer'}" data-kt-scroll-wrappers="#kt_aside, #kt_aside_menu" data-kt-scroll-offset="{default: '5px', lg: '75px'}">
-			<!--begin::Menu-->
-			<div class="menu menu-column menu-rounded menu-sub-indention fw-semibold fs-6" id="#kt_aside_menu" data-kt-menu="true">
-				<!--begin:Menu item-->
-				<div class="menu-item">
-					<!--begin:Menu link Home-->
-					<a class="menu-link" asp-controller="Home" asp-action="Index" active-when="Home">
-						<span class="menu-icon">
-							<!--begin::Svg Icon Home| path: icons/duotune/general/gen002.svg-->
-							<span class="svg-icon svg-icon-2">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path d="M11 2.375L2 9.575V20.575C2 21.175 2.4 21.575 3 21.575H9C9.6 21.575 10 21.175 10 20.575V14.575C10 13.975 10.4 13.575 11 13.575H13C13.6 13.575 14 13.975 14 14.575V20.575C14 21.175 14.4 21.575 15 21.575H21C21.6 21.575 22 21.175 22 20.575V9.575L13 2.375C12.4 1.875 11.6 1.875 11 2.375Z" fill="currentColor" />
-								</svg>
-							</span>
-							<!--end::Svg Home Icon-->
-						</span>
-						<span class="menu-title">Home</span>
-					</a>
-					<!--end:Menu link Home-->
-					<!--begin:Menu link  Category-->
-					<a class="menu-link" asp-controller="Category" asp-action="Index" active-when="Category">
-						<span class="menu-icon">
-							<!--begin::Svg Category Icon | path: icons/duotune/general/gen002.svg-->
-							<span class="svg-icon svg-icon-2">
-								<svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-									<path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="currentColor" />
-									<path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="currentColor" />
-								</svg>
-							</span>
-							<!--end::Svg Category Icon-->
-						</span>
-						<span class="menu-title">Categories</span>
-					</a>
-					<!--end:Menu link Category -->
-					<!--begin:Menu link  Author-->
-					<a class="menu-link" asp-controller="Author" asp-action="Index" active-when="Author">
-						<span class="menu-icon">
-							<!--begin::Svg Author Icon | path: icons/duotune/general/gen002.svg-->
-							<span class="svg-icon svg-icon-2">
-								<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-vcard" viewBox="0 0 16 16">
-									<path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5" />
-									<path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z" />
-								</svg>
-							</span>
-							<!--end::Svg Author Icon-->
-						</span>
-						<span class="menu-title">Authors</span>
-					</a>
-					<!--end:Menu link Author -->
-				</div>
-				<!--end:Menu item-->
-			</div>
-			<!--end::Menu-->
-		</div>
-	</div>
-	<!--end::Aside menu-->
+    <!--begin::Aside menu-->
+    <div class="aside-menu flex-column-fluid px-4">
+        <!--begin::Aside Menu-->
+        <div class="hover-scroll-overlay-y my-5 pe-4 me-n4" id="kt_aside_menu_wrapper" data-kt-scroll="true" data-kt-scroll-activate="true" data-kt-scroll-height="auto" data-kt-scroll-dependencies="{default: '#kt_aside_footer', lg: '#kt_header, #kt_aside_footer'}" data-kt-scroll-wrappers="#kt_aside, #kt_aside_menu" data-kt-scroll-offset="{default: '5px', lg: '75px'}">
+            <!--begin::Menu-->
+            <div class="menu menu-column menu-rounded menu-sub-indention fw-semibold fs-6" id="#kt_aside_menu" data-kt-menu="true">
+                <!--begin:Menu item-->
+                <div class="menu-item">
+                    <!--begin:Menu link Home-->
+                    <a class="menu-link" asp-controller="Home" asp-action="Index" active-when="Home">
+                        <span class="menu-icon">
+                            <!--begin::Svg Icon Home| path: icons/duotune/general/gen002.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path d="M11 2.375L2 9.575V20.575C2 21.175 2.4 21.575 3 21.575H9C9.6 21.575 10 21.175 10 20.575V14.575C10 13.975 10.4 13.575 11 13.575H13C13.6 13.575 14 13.975 14 14.575V20.575C14 21.175 14.4 21.575 15 21.575H21C21.6 21.575 22 21.175 22 20.575V9.575L13 2.375C12.4 1.875 11.6 1.875 11 2.375Z" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Home Icon-->
+                        </span>
+                        <span class="menu-title">Home</span>
+                    </a>
+                    <!--end:Menu link Home-->
+                    <!--begin:Menu link  Category-->
+                    <a class="menu-link" asp-controller="Category" asp-action="Index" active-when="Category">
+                        <span class="menu-icon">
+                            <!--begin::Svg Category Icon | path: icons/duotune/general/gen002.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                    <path opacity="0.3" d="M21.25 18.525L13.05 21.825C12.35 22.125 11.65 22.125 10.95 21.825L2.75 18.525C1.75 18.125 1.75 16.725 2.75 16.325L4.04999 15.825L10.25 18.325C10.85 18.525 11.45 18.625 12.05 18.625C12.65 18.625 13.25 18.525 13.85 18.325L20.05 15.825L21.35 16.325C22.35 16.725 22.35 18.125 21.25 18.525ZM13.05 16.425L21.25 13.125C22.25 12.725 22.25 11.325 21.25 10.925L13.05 7.62502C12.35 7.32502 11.65 7.32502 10.95 7.62502L2.75 10.925C1.75 11.325 1.75 12.725 2.75 13.125L10.95 16.425C11.65 16.725 12.45 16.725 13.05 16.425Z" fill="currentColor" />
+                                    <path d="M11.05 11.025L2.84998 7.725C1.84998 7.325 1.84998 5.925 2.84998 5.525L11.05 2.225C11.75 1.925 12.45 1.925 13.15 2.225L21.35 5.525C22.35 5.925 22.35 7.325 21.35 7.725L13.05 11.025C12.45 11.325 11.65 11.325 11.05 11.025Z" fill="currentColor" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Category Icon-->
+                        </span>
+                        <span class="menu-title">Categories</span>
+                    </a>
+                    <!--end:Menu link Category -->
+                    <!--begin:Menu link  Author-->
+                    <a class="menu-link" asp-controller="Author" asp-action="Index" active-when="Author">
+                        <span class="menu-icon">
+                            <!--begin::Svg Author Icon | path: icons/duotune/general/gen002.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-person-vcard" viewBox="0 0 16 16">
+                                    <path d="M5 8a2 2 0 1 0 0-4 2 2 0 0 0 0 4m4-2.5a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4a.5.5 0 0 1-.5-.5M9 8a.5.5 0 0 1 .5-.5h4a.5.5 0 0 1 0 1h-4A.5.5 0 0 1 9 8m1 2.5a.5.5 0 0 1 .5-.5h3a.5.5 0 0 1 0 1h-3a.5.5 0 0 1-.5-.5" />
+                                    <path d="M2 2a2 2 0 0 0-2 2v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2zM1 4a1 1 0 0 1 1-1h12a1 1 0 0 1 1 1v8a1 1 0 0 1-1 1H8.96q.04-.245.04-.5C9 10.567 7.21 9 5 9c-2.086 0-3.8 1.398-3.984 3.181A1 1 0 0 1 1 12z" />
+                                </svg>
+                            </span>
+                            <!--end::Svg Author Icon-->
+                        </span>
+                        <span class="menu-title">Authors</span>
+                    </a>
+                    <!--end:Menu link Author -->
+                    <!--begin:Menu link  Books-->
+                    <a class="menu-link" asp-controller="Book" asp-action="Index" active-when="Book">
+                        <span class="menu-icon">
+                            <!--begin::Svg Books Icon | path: icons/duotune/general/gen002.svg-->
+                            <span class="svg-icon svg-icon-2">
+                                <svg xmlns="http://www.w3.org/2000/svg" xmlns:xlink="http://www.w3.org/1999/xlink" fill="#000000" version="1.1" id="Capa_1" width="800px" height="800px" viewBox="0 0 795.035 795.035" xml:space="preserve">
+                                    <path d="M0,647.589c0,49.892,40.588,90.479,90.479,90.479h20.108h552.079h40.211h41.895v-40.212h-41.895V597.322h41.895v-17.594   h20.104h30.16v-40.212h-30.16V438.989h30.16v-40.211h-30.16h-2.513v-13.395v-20.107v-0.863l-49.647-92.992h52.161v-54.073   L633.665,56.968H170.738L51.356,245.075c-20.417,16.612-33.76,41.625-33.76,69.935c0,49.581,40.114,89.89,89.593,90.383   c-33.291,13.372-56.922,45.847-56.922,83.864c0,27.604,12.688,52.046,32.242,68.656C36.395,562.022,0,600.426,0,647.589z    M57.806,315.01c0-18.75,10.429-34.946,25.686-43.586h599.278v93.854H108.074C80.359,365.276,57.806,342.72,57.806,315.01z    M140.747,438.991h20.106h563.809v100.526H160.853h-20.106c-27.715,0-50.268-22.541-50.268-50.26   C90.48,461.53,113.032,438.991,140.747,438.991z M90.48,597.322h20.108h552.079v100.533h-552.08H90.479   c-27.713,0-50.265-22.541-50.265-50.267C40.214,619.862,62.767,597.322,90.48,597.322z" fill="currentColor"/>
+                                </svg>
+                            </span>
+                            <!--end::Svg Books Icon-->
+                        </span>
+                        <span class="menu-title">Books</span>
+                    </a>
+                    <!--end:Menu link Books -->
+                </div>
+                <!--end:Menu item-->
+            </div>
+            <!--end::Menu-->
+        </div>
+    </div>
+    <!--end::Aside menu-->
 </div>

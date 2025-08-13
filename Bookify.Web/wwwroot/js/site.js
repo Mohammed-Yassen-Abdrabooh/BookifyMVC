@@ -175,6 +175,24 @@ var KTDatatables = function () {
 
 
 $(document).ready(function () {
+    // Select2 Library ==> is used for enhancing select elements with search functionality use in BookModule To Show (Authors,Categories)
+    $(".js-select2").select2();
+    // Date Range Picker ==> is used for filtering date ranges in BookModule Use in Publishing Date in Book Form
+    $(".js-dateRangePicker").daterangepicker({
+        singleDatePicker: true,
+        autoApply: true,
+        drops: 'up',
+        maxDate : new Date()
+    })
+    // tineMCE Editor ==> is used for enhancing textareas with rich text editing capabilities use in BookModule To Show (Description)
+    var options = { selector: ".js-tinymce", height: "390" };
+
+    if (KTThemeMode.getMode() === "dark") {
+        options["skin"] = "oxide-dark";
+        options["content_css"] = "dark";
+    }
+
+    tinymce.init(options);
     // SweatAlert2
     var message = $("#ActionMessage").text();
     if (message !== '') {
