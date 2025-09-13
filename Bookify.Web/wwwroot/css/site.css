@@ -29,3 +29,9 @@ body {
     max-width: 350px;
 }
 /*End Override image Preview For Create New Book*/
+
+/*Start Override on Height for input Check switch in Book form*/
+.form-switch.form-check-solid .form-check-input {
+    height: 1.9rem;
+}
+    /*End Override on Height for input Check switch in Book form*/

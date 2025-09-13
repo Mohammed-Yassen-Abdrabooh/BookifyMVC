@@ -1,5 +1,7 @@
 ﻿using Bookify.Web.Core.ViewModels;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SixLabors.ImageSharp;
+using SixLabors.ImageSharp.Processing;
 
 namespace Bookify.Web.Controllers
 {
@@ -23,6 +25,11 @@ namespace Bookify.Web.Controllers
             return View();
         }
 
+        public IActionResult Details(int id)
+        {
+            return View();
+        }
+
         public IActionResult Create()
         {
            //var booksFormViewModel = PopulateViewModel();
@@ -31,7 +38,7 @@ namespace Bookify.Web.Controllers
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Create(BooksFormViewModel model)
+        public async Task<IActionResult> Create(BooksFormViewModel model)
         {
 
             if (!ModelState.IsValid) 
@@ -55,10 +62,20 @@ namespace Bookify.Web.Controllers
                 }
                 var imageName = $"{Guid.NewGuid()}{extension}";
                 var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", imageName);
+                var thumbPath = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books/thumb", imageName);
 
                 using var stream = System.IO.File.Create(path);
-                model.Image.CopyTo(stream);
-                book.ImageUrl = imageName;
+                await model.Image.CopyToAsync(stream);
+                stream.Dispose();
+
+                book.ImageUrl = $"/images/books/{imageName}";
+                book.ImageThumbnailUrl = $"/images/books/thumb/{imageName}";
+
+                using var image = Image.Load(model.Image.OpenReadStream());
+                var ratio = (float)image.Width / 200;
+                var height = (int)(image.Height / ratio);
+                image.Mutate(i => i.Resize(width: 200 , height: height));
+                image.Save(thumbPath);
             }
             foreach (var category in model.SelectedCategories)
             {
@@ -67,7 +84,7 @@ namespace Bookify.Web.Controllers
             }
             _dbContext.Books.Add(book);
             _dbContext.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = book.Id });
         }
 
         public IActionResult Edit(int id)
@@ -79,12 +96,12 @@ namespace Bookify.Web.Controllers
             var model= _mapper.Map<BooksFormViewModel>(book);
             var booksFormViewModel = PopulateViewModel(model);
             booksFormViewModel.SelectedCategories = book.Categories.Select(c => c.CategoryId).ToList();
-            return View("Form", PopulateViewModel(booksFormViewModel));
+            return View("Form", booksFormViewModel);
         }
 
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public IActionResult Edit(BooksFormViewModel model)
+        public async Task<IActionResult> Edit(BooksFormViewModel model)
         {
 
             if (!ModelState.IsValid)
@@ -100,9 +117,13 @@ namespace Bookify.Web.Controllers
             {
                 if (!string.IsNullOrEmpty(book.ImageUrl))
                 {
-                    var oldImagePath = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", book.ImageUrl);
+                    var oldImagePath =$"{_webHostEnvironment.WebRootPath}{book.ImageUrl}";
+                    var oldThumbPath =$"{_webHostEnvironment.WebRootPath}{book.ImageThumbnailUrl}";
                     if (System.IO.File.Exists(oldImagePath))
                         System.IO.File.Delete(oldImagePath);
+
+                    if (System.IO.File.Exists(oldThumbPath))
+                        System.IO.File.Delete(oldThumbPath);
                 }
                 var extension = Path.GetExtension(model.Image.FileName);
                 if (!_allowedExtensions.Contains(extension))
@@ -116,11 +137,22 @@ namespace Bookify.Web.Controllers
                     return View("Form", PopulateViewModel());
                 }
                 var imageName = $"{Guid.NewGuid()}{extension}";
+
                 var path = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books", imageName);
+                var thumbPath = Path.Combine($"{_webHostEnvironment.WebRootPath}/images/books/thumb", imageName);
 
                 using var stream = System.IO.File.Create(path);
-                model.Image.CopyTo(stream);
-                model.ImageUrl = imageName;
+                await model.Image.CopyToAsync(stream);
+                stream.Dispose();
+
+                model.ImageUrl = $"/images/books/{imageName}";
+                model.ImageThumbnailUrl = $"/images/books/thumb/{imageName}";
+
+                using var image = Image.Load(model.Image.OpenReadStream());
+                var ratio = (float)image.Width / 200;
+                var height = (int)(image.Height / ratio);
+                image.Mutate(i => i.Resize(width: 200, height: height));
+                image.Save(thumbPath);
             }
             else if(model.Image is null && !string.IsNullOrEmpty(book.ImageUrl))
                 model.ImageUrl = book.ImageUrl; // Keep the old image if no new image is uploaded
@@ -134,7 +166,7 @@ namespace Bookify.Web.Controllers
             }
 
             _dbContext.SaveChanges();
-            return RedirectToAction(nameof(Index));
+            return RedirectToAction(nameof(Details), new { id = book.Id });
         }
 
         // Create Action To Prevent User To Add Duplicate Category Name by Client Side Validation

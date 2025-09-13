@@ -38,9 +38,13 @@ function ShowErrorMessage(msg = "Something went wrong!") {
         }
     });
 }
+function DisableSubmitButton() {
+    $('body :submit').attr('disabled', 'disabled').attr("data-kt-indicator", "on"); // Disable all submit buttons to prevent multiple submissions
+}
 
 function OnModalBegin() {
-    $('body :submit').attr('disabled', 'disabled').attr("data-kt-indicator", "on"); // Disable all submit buttons to prevent multiple submissions
+
+    DisableSubmitButton();
 }
 function OnModalSuccess(row) {
 
@@ -175,8 +179,25 @@ var KTDatatables = function () {
 
 
 $(document).ready(function () {
+    //Disable submit Button at Send Request if the Form is Valid
+    $('form').on('submit', function () {
+        if ($(".js-tinymce").length > 0) {
+            $(".js-tinymce").each(function () {
+                var input = $(this)
+                var content = tinyMCE.get(input.attr('id')).getContent(); // because when get('Description') its a static only work with inputs by id "Description" ==> To make it dynamic using this
+                input.val(content);
+            })
+        }
+        var isValid = $(this).valid();
+        if (isValid)
+            DisableSubmitButton(); 
+
+    })
     // Select2 Library ==> is used for enhancing select elements with search functionality use in BookModule To Show (Authors,Categories)
     $(".js-select2").select2();
+    $(".js-select2").on("select2:select", function (e) {
+        $("form").validate().element("#" + $(this).attr("id"));
+    })
     // Date Range Picker ==> is used for filtering date ranges in BookModule Use in Publishing Date in Book Form
     $(".js-dateRangePicker").daterangepicker({
         singleDatePicker: true,
@@ -185,14 +206,16 @@ $(document).ready(function () {
         maxDate : new Date()
     })
     // tineMCE Editor ==> is used for enhancing textareas with rich text editing capabilities use in BookModule To Show (Description)
-    var options = { selector: ".js-tinymce", height: "390" };
+    if ($(".js-tinymce").length > 0) {
+        var options = { selector: ".js-tinymce", height: "395" };
 
-    if (KTThemeMode.getMode() === "dark") {
-        options["skin"] = "oxide-dark";
-        options["content_css"] = "dark";
+        if (KTThemeMode.getMode() === "dark") {
+            options["skin"] = "oxide-dark";
+            options["content_css"] = "dark";
+        }
+        tinymce.init(options);
     }
 
-    tinymce.init(options);
     // SweatAlert2
     var message = $("#ActionMessage").text();
     if (message !== '') {
