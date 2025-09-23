@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
+using System.Linq.Dynamic.Core;
 
 namespace Bookify.Web.Controllers
 {
@@ -27,7 +28,16 @@ namespace Bookify.Web.Controllers
 
         public IActionResult Details(int id)
         {
-            return View();
+            var book = _dbContext.Books
+                                 .Include(a=>a.Author)
+                                 .Include(c=>c.Categories)
+                                 .ThenInclude(c=>c.Category)
+                                 .SingleOrDefault(b=>b.Id == id);
+            if(book is null)
+                return NotFound();
+
+            var viewModel = _mapper.Map<BookViewModel>(book);
+            return View(viewModel);
         }
 
         public IActionResult Create()
@@ -155,7 +165,10 @@ namespace Bookify.Web.Controllers
                 image.Save(thumbPath);
             }
             else if(model.Image is null && !string.IsNullOrEmpty(book.ImageUrl))
+            {
                 model.ImageUrl = book.ImageUrl; // Keep the old image if no new image is uploaded
+                model.ImageThumbnailUrl = book.ImageThumbnailUrl; // Keep the old Thumbnailimage if no new image is uploaded
+            }
 
             book = _mapper.Map(model, book); // Update the book properties from the model
             book.LastUpdateOn = DateTime.Now; // Update the LastUpdateOn property
@@ -169,6 +182,31 @@ namespace Bookify.Web.Controllers
             return RedirectToAction(nameof(Details), new { id = book.Id });
         }
 
+        // Action To Get Books With Pagination For Usinge DataTable on server 
+        [HttpPost]
+        public IActionResult GetBooks()
+        {
+            var skip = int.Parse(Request.Form["start"]);
+            var pageSize = int.Parse(Request.Form["length"]);
+
+            var sortColumnIndex = int.Parse(Request.Form["order[0][column]"]);
+            var sortColumnName = Request.Form[$"columns[{sortColumnIndex}][name]"];
+            var sortColumnDirection = Request.Form["order[0][dir]"]; // asc or desc
+
+            var searchValue = Request.Form["search[value]"]; // Search Value from (Search Box)
+            IQueryable<Book> books = _dbContext.Books.Include(b=>b.Author);
+            if(!string.IsNullOrEmpty(searchValue))
+                books= books.Where(b => b.Title.Contains(searchValue) || b.Author!.Name.Contains(searchValue) );
+            // Using System.Linq.Dynamic.Core for dynamic sorting by using OrderBy() which get from this Lib
+            // beacause it permit me to put there values as a String not as a Property of BookModel
+            books = books.OrderBy($"{sortColumnName} {sortColumnDirection}"); 
+            var data = books.Skip(skip).Take(pageSize).ToList();
+            var recordsTotal = books.Count();
+
+            var jsonData = new { recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
+            return Ok(jsonData); 
+
+        }
         // Create Action To Prevent User To Add Duplicate Category Name by Client Side Validation
         public IActionResult AllowItem(BooksFormViewModel model)
         {
