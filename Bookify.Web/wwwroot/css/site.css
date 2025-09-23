@@ -35,3 +35,11 @@ body {
     height: 1.9rem;
 }
     /*End Override on Height for input Check switch in Book form*/
+
+
+/*Start Custome Styles*/
+.datatable-spinner + div {
+    display: none !important;
+}
+
+/*End Custome Styles*/
