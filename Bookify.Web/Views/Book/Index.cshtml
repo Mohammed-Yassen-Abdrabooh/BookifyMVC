@@ -1,4 +1,6 @@
-﻿@{
+﻿@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
+
+@{
     ViewData["Title"] = "Book";
 }
 
@@ -49,13 +51,13 @@
                     <tr class="fw-bold fs-6 text-gray-800">
                         <th class="d-none"></th>
                         <th>Book</th>
-@*                         <th>Publisher</th>
+                        <th>Publisher</th>
                         <th>Publishing Date</th>
                         <th>Hale</th>
                         <th>Categories</th>
                         <th>Rental</th>
                         <th>Status</th>
-                        <th class="text-end">Action</th> *@
+                        <th class="text-end">Action</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -67,43 +69,13 @@
 </div>
 <!--End Body of Index-->
 
+<input type="hidden" name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken" />
+
 @section Plugins {
     <script src="~/assets/plugins/datatables/datatables.bundle.js"></script>
 }
 
 @section Scripts{
-    <script>
-        $(document).ready(function(){
-            $('[data-kt-filter="search"]').on('keyup',function(){
-                var input = $(this);
-                datatable.search(input.val().toLowerCase()).draw();
-            })
-            datatable = $('#books').DataTable({
-                serverSide: true,
-                processing:true,
-                stateSave:true,// save the BiquadFilterNode origin search for columnDefs if you go to Edit book and return back onpageshow the same data you parent filtered before
-                // lengthMenu:[5,40,80], //this change the length of the page
-                language:{
-                    processing: '<div class="d-flex justify-content-center text-primary align-items-center datatable-spinner"><div class="spinner-border" role="status"><span class="visually-hidden">Loading...</span></div><span class="text-muted ps-2">Loading...</span></div>'
-                },
-
-                ajax:{
-                    url:'/Book/GetBooks',
-                    type: 'POST',
-                },
-                order:[[1,'asc']],
-                columnDefs:[{
-                    targets: [0],
-                    visible: false,
-                    searchable: false
-                }],
-                columns:[
-                   //show and Hear my Voice Record To Explain this in Private Chat in 21-9-2025
-                    {"data": "id", "name":"Id","className":"d-none"},
-                    {"data": "title", "name":"Title"}  
-                ]
-
-            });
-        });
-    </script>
+    <script src="~/js/book.js" asp-append-version="true"></script>
 }
+

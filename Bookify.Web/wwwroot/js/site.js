@@ -66,8 +66,8 @@ function OnModalSuccess(row) {
     // old way for Using jQuery to append new row to table body
     // $("tbody").append(item);
 
-    KTMenu.init(); // Re-initialize the menu after adding new item "Must do it if you use Metronic Theme"
-    KTMenu.initHandlers(); // Re-initialize the menu handlers "Must do it if you use Metronic Theme"
+    //KTMenu.init(); // Re-initialize the menu after adding new item "Must do it if you use Metronic Theme"
+    //KTMenu.initGlobalHandlers(); // Re-initialize the menu handlers "Must do it if you use Metronic Theme"
 }
 
 function OnModalComplete() {
@@ -97,6 +97,9 @@ var KTDatatables = function () {
         datatable = $(table).DataTable({
             "info": false,
             'pageLength': 10,
+            'drawCallback': function () {
+                KTMenu.createInstances();
+            }
         });
     }
 

@@ -194,16 +194,21 @@ namespace Bookify.Web.Controllers
             var sortColumnDirection = Request.Form["order[0][dir]"]; // asc or desc
 
             var searchValue = Request.Form["search[value]"]; // Search Value from (Search Box)
-            IQueryable<Book> books = _dbContext.Books.Include(b=>b.Author);
+            IQueryable<Book> books = _dbContext.Books
+                                               .Include(b=>b.Author)
+                                               .Include(b=>b.Categories)
+                                               .ThenInclude(c=>c.Category);
+
             if(!string.IsNullOrEmpty(searchValue))
                 books= books.Where(b => b.Title.Contains(searchValue) || b.Author!.Name.Contains(searchValue) );
             // Using System.Linq.Dynamic.Core for dynamic sorting by using OrderBy() which get from this Lib
             // beacause it permit me to put there values as a String not as a Property of BookModel
             books = books.OrderBy($"{sortColumnName} {sortColumnDirection}"); 
             var data = books.Skip(skip).Take(pageSize).ToList();
+            var mappedData = _mapper.Map<IEnumerable<BookViewModel>>(data);
             var recordsTotal = books.Count();
 
-            var jsonData = new { recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = data };
+            var jsonData = new { recordsFiltered = recordsTotal, recordsTotal = recordsTotal, data = mappedData };
             return Ok(jsonData); 
 
         }
@@ -216,6 +221,24 @@ namespace Bookify.Web.Controllers
 
             // If the category name already exists, return false ==> then it Run an Error Message
             return Json(isAllowed); // Return true if the category name does not exist, false otherwise            
+
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public IActionResult ToggleStatus(int id)
+        {
+
+            var book = _dbContext.Books.Find(id);
+            if (book is null)
+                return NotFound();
+            
+            book.IsDeleted = !book.IsDeleted;// Toggle the IsDeleted status like if condition
+            book.LastUpdateOn = DateTime.Now;
+
+            _dbContext.Books.Update(book);
+            _dbContext.SaveChanges();
+            return Ok();
 
         }
 

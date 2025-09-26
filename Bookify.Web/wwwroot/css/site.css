@@ -42,4 +42,7 @@ body {
     display: none !important;
 }
 
+.h-70 {
+    height: 70px !important;
+}
 /*End Custome Styles*/
