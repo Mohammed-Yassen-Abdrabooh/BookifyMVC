@@ -26,11 +26,18 @@ namespace Bookify.Web.Core.Mapping
             CreateMap<BooksFormViewModel, Book>()
                     .ReverseMap()
                     .ForMember(dest=>dest.Categories ,opt=>opt.Ignore()); // Ignore Categories for Mapping because we will handle it manually in the controller
-        
-            // Mapping Book  To BookViewModel
-            CreateMap<Book, BookViewModel>()
+
+            // Mapping Book  To BookViewModel ==> Details View
+            // dest is a BookViewModel , src is a Book  
+            CreateMap<Book, BookViewModel>() 
                 .ForMember(dest => dest.Author, opt => opt.MapFrom(src => src.Author!.Name))
                 .ForMember(dest => dest.Categories, opt => opt.MapFrom(src => src.Categories.Select(c=>c.Category!.Name).ToList()));
+
+            // Mappind BookCopy To BookCopyViewModel 
+            CreateMap<BookCopy, BookCopyViewModel>()
+                .ForMember(dest => dest.BookTitle, opt => opt.MapFrom(src => src.Book!.Title));
+
+
         }
     }
 }

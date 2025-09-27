@@ -1,4 +1,6 @@
 ﻿@model BookViewModel
+@inject Microsoft.AspNetCore.Antiforgery.IAntiforgery antiforgery
+
 @{
     ViewData["Title"] = Model.Title;
 }
@@ -103,7 +105,7 @@
                                             <path fill-rule="evenodd" clip-rule="evenodd" d="M14.7857 7.125H6.21429C5.62255 7.125 5.14286 7.6007 5.14286 8.1875V18.8125C5.14286 19.3993 5.62255 19.875 6.21429 19.875H14.7857C15.3774 19.875 15.8571 19.3993 15.8571 18.8125V8.1875C15.8571 7.6007 15.3774 7.125 14.7857 7.125ZM6.21429 5C4.43908 5 3 6.42709 3 8.1875V18.8125C3 20.5729 4.43909 22 6.21429 22H14.7857C16.5609 22 18 20.5729 18 18.8125V8.1875C18 6.42709 16.5609 5 14.7857 5H6.21429Z" fill="currentColor" />
                                         </svg>
                                     </span>
-                                    <div class="fs-7 fw-bold" data-kt-countup="true" data-kt-countup-value="7">0</div>
+                                    <div class="fs-7 fw-bold" data-kt-countup="true" data-kt-countup-value="@Model.Copies.Count()">0</div>
                                 </div>
                                 <!--end::Number-->
                                 <!--begin::Label-->
@@ -171,12 +173,76 @@
             </div>
             <!--end::Card header-->
             <div class="card-body">
-                Copies
+                <table class="table table-row-dashed table-row-gray-300 gy-2 align-middle">
+                    <thead>
+                        <tr class="fw-bold fs-6 text-gray-400 text-uppercase">
+                            <th>Serial Number</th>
+                            <th>Edition</th>
+                            <th>Rental?</th>
+                            <th>Status</th>
+                            <th>Created On</th>
+                            <th class="text-end">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var copy in Model.Copies)
+                        {
+                            <tr>
+                                <td>@copy.SerialNumber</td>
+                                <td>@copy.EditionNumber</td>
+                                <td>
+                                    <span class="badge badge-light-@(copy.IsAvailableForRental ? "success" : "warning")">
+                                        @(copy.IsAvailableForRental ? "Rentable" : "Not Rentable")
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="badge badge-light-@(copy.IsDeleted ? "danger" : "success") js-status">
+                                        @(copy.IsDeleted ? "Deleted" : "Available")
+                                    </span>
+                                </td>
+                                <td>@copy.CreatedOn.ToString("MMM dd, yyyy")</td>
+                                <td class="text-end">
+                                    <a href="#" class="btn btn-light btn-active-light-primary btn-sm" data-kt-menu-trigger="click" data-kt-menu-placement="bottom-end">
+                                        Actions
+                                        <!--begin::Svg Icon | path: icons/duotune/arrows/arr072.svg-->
+                                        <span class="svg-icon svg-icon-5 m-0">
+                                            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                <path d="M11.4343 12.7344L7.25 8.55005C6.83579 8.13583 6.16421 8.13584 5.75 8.55005C5.33579 8.96426 5.33579 9.63583 5.75 10.05L11.2929 15.5929C11.6834 15.9835 12.3166 15.9835 12.7071 15.5929L18.25 10.05C18.6642 9.63584 18.6642 8.96426 18.25 8.55005C17.8358 8.13584 17.1642 8.13584 16.75 8.55005L12.5657 12.7344C12.2533 13.0468 11.7467 13.0468 11.4343 12.7344Z" fill="currentColor"></path>
+                                            </svg>
+                                        </span>
+                                        <!--end::Svg Icon-->
+                                    </a>
+                                    <div class="menu menu-sub menu-sub-dropdown menu-column menu-rounded menu-gray-800 menu-state-bg-light-primary fw-semibold w-200px py-3" data-kt-menu="true" style="">
+                                        <!--begin::Menu item-->
+                                        <div class="menu-item px-3 ">
+                                            <a href="javascript:;" class="menu-item px-3 js-render-modal" data-title="Edit Copy"
+                                               data-url="/BookCopy/Edit/@copy.Id" data-update="true">
+                                                Edit
+                                            </a>
+                                        </div>
+                                        <!--end::Menu item-->
+                                        <!--begin::Menu item-->
+                                        <div class="menu-item flex-stack px-3">
+                                            <a href="javascript:;" class="menu-item px-3 js-toggle-status"
+                                               data-url="/BookCopy/ToggleStatus/@copy.Id">
+                                                Toggle Status
+                                            </a>
+                                        </div>
+                                        <!--end::Menu item-->
+                                    </div>
+                                </td>
+                                
+                            </tr>
+                        }
+                    </tbody>
+                </table>
             </div>
         </div>
         <!--end::Card-->
     </div>
 </div>
+
+<input type="hidden" name="__RequestVerificationToken" value="@antiforgery.GetAndStoreTokens(Context).RequestToken" />
 
 @section Plugins {
 
