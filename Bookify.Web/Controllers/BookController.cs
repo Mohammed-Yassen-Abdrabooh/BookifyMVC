@@ -26,6 +26,7 @@ namespace Bookify.Web.Controllers
             return View();
         }
 
+
         public IActionResult Details(int id)
         {
             var book = _dbContext.Books

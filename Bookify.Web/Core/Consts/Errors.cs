@@ -8,6 +8,7 @@
         public const string NotAllowedExtensionError = "Only .png, .jpeg, .jpg, .gif files are Allowed";
         public const string MaxSizeError = "File Cannot be More Than 2 MB!";
         public const string NotAllowFutureDatesError = "Publishing Date Cannot be in The Future!!";
+        public const string InvalidRangeError = "{0} Number Should be Between {1} To {2}";
 
         
 

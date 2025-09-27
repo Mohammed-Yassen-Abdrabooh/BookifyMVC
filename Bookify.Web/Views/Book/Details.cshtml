@@ -170,6 +170,15 @@
                 <!--begin::Card title-->
                 <div class="card-title fs-3 fw-bold">Copies</div>
                 <!--end::Card title-->
+                <!--Stat Create New Copy for book Btn-->
+                <div class="card-toolbar">
+                    <a href="javascript:;" class="btn btn-sm btn-primary js-render-modal"
+                       data-title="Add Copy For Book" data-url="/BookCopy/Create?bookId=@Model.Id">
+                        <i class="bi bi-plus-square-dotted"></i>
+                        Add
+                    </a>
+                </div>
+                <!--End Create New Copy for book Btn-->
             </div>
             <!--end::Card header-->
             <div class="card-body">
@@ -247,4 +256,8 @@
 @section Plugins {
 
     <script src="~/assets/plugins/fslightbox/fslightbox.bundle.js"></script>
+}
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
 }
