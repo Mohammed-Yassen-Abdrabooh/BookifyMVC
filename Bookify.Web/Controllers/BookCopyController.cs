@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Bookify.Web.Core.Models;
+using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 
 namespace Bookify.Web.Controllers
@@ -50,15 +51,56 @@ namespace Bookify.Web.Controllers
             {
                 EditionNumber = model.EditionNumber,
                 IsAvailableForRental = book.IsAvailableForRental? model.IsAvailableForRental : false,
+                CreatedOn = DateTime.Now,
             };
 
             book.Copies.Add(copy);
             _dbContext.Books.Update(book);
             _dbContext.SaveChanges();
 
-            return Ok();
+            // This step Go To Refresh the Book Copies Table in Book Details View 
+            // When You add New Copy Was Not Appeared Until You Refresh the Page Then Now It Will Appear Without Refresh
+            // Then We Need a Function to Add or update Row in Table this Fucntion Will Call after Submit the Form and We Was Use (onModelSuccess()) 
+            // but This Function Work With DataTable Library NOOOOOOOW We Go To Details View and Add The New Function To Add or Update Row in Table
+            var bookCopyViewModel = _mapper.Map<BookCopyViewModel>(copy);
+            return PartialView("_BookCopyRow", bookCopyViewModel);
 
         }
+
+        [AjaxOnly]
+        public IActionResult Edit(int id)
+        {
+            var copy = _dbContext.BookCopies.Include(c=>c.Book).FirstOrDefault(c=>c.Id == id);
+            if (copy is null)
+                return NotFound();
+            var copyViewModel = _mapper.Map<BookCopyFormViewModel>(copy);
+            copyViewModel.ShowRentalInput = copy.Book!.IsAvailableForRental;
+            return PartialView("Form",copyViewModel);
+        }
+
+        [HttpPost]
+        public IActionResult Edit(BookCopyFormViewModel model)
+        {
+            if (!ModelState.IsValid)
+                return BadRequest();
+
+            var copy = _dbContext.BookCopies.Include(c=>c.Book).FirstOrDefault(c=>c.Id == model.Id);
+            if (copy is null)
+                return NotFound();
+
+            copy.EditionNumber = model.EditionNumber;
+            copy.IsAvailableForRental = copy.Book!.IsAvailableForRental ? model.IsAvailableForRental : false;
+            copy.LastUpdateOn = DateTime.Now;
+
+            _dbContext.BookCopies.Update(copy);
+            _dbContext.SaveChanges();
+
+            var bookCopyViewModel = _mapper.Map<BookCopyViewModel>(copy);
+            return PartialView("_BookCopyRow", bookCopyViewModel);
+
+        }
+
+
         [HttpPost]
         [ValidateAntiForgeryToken]
         public IActionResult ToggleStatus(int id)

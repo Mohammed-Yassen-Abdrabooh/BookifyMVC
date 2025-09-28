@@ -4,7 +4,7 @@
       data-ajax-method="post"
       data-ajax="true"
       data-ajax-begin="OnModalBegin"
-      data-ajax-success="OnModalSuccess"
+      data-ajax-success="@(Model?.Id > 0 ? "onEditCopySuccess" : "onAddCopySuccess")"
       data-ajax-failure="ShowErrorMessage"
       data-ajax-complete="OnModalComplete">
 
@@ -16,7 +16,7 @@
     <!--begin::Input group-->
     <div class="mb-3">
         <div class="form-floating mb-2">
-            <input type="text" class="form-control " asp-for="EditionNumber" placeholder="New Edition Number" value="" />
+            <input type="text" class="form-control " asp-for="EditionNumber" placeholder="New Edition Number" value="@(Model?.Id > 0 ? Model.EditionNumber : string.Empty)" />
             <label asp-for="EditionNumber"></label>
         </div>
         <span asp-validation-for="EditionNumber" class="ms-3 text-danger d-block"></span>
