@@ -18,7 +18,9 @@ namespace Bookify.Web.Helpers
             if (string.IsNullOrEmpty(ActiveWhen))
                 return;
 
-            var curreentController = ViewContextData?.RouteData.Values["controller"]?.ToString();
+            // Adding null-forgiving operator as we are checking for null above ==> because of that the compiler should not warn us here
+            // When Go To Access Register page it says that NullReferenceException to Solve it we can add ? after ViewContextData
+            var curreentController = ViewContextData?.RouteData.Values["controller"]?.ToString() ?? string.Empty;
 
             if (curreentController!.Equals(ActiveWhen))
             {
