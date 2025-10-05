@@ -1,4 +1,5 @@
 using Bookify.Web.Core.Mapping;
+using Bookify.Web.Seeds;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
@@ -7,7 +8,7 @@ namespace Bookify.Web
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +18,17 @@ namespace Bookify.Web
                 options.UseSqlServer(connectionString));
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            // in case of using ApplicationUser class only without roles
             builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
                 .AddEntityFrameworkStores<ApplicationDbContext>();
+
+            // in case of using ApplicationUser class with roles Must add DefaultUI and DefaultTokenProviders and The "DefaultTokenProviders" used for reset password and email confirmation
+            // Run only For the first time to create the roles in the database Then you can comment it and uncomment the above code
+            ////builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+            ////       .AddEntityFrameworkStores<ApplicationDbContext>()
+            ////       .AddDefaultUI()
+            ////       .AddDefaultTokenProviders();
+
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
@@ -44,6 +54,17 @@ namespace Bookify.Web
 
             app.UseAuthentication();
             app.UseAuthorization();
+
+            // Run only for the first time to create the roles in the database Then you can comment it
+            //var scopeFactort = app.Services.GetRequiredService<IServiceScopeFactory>();
+            //using var scope = scopeFactort.CreateScope();
+
+            //var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+
+            //await DefaultRoles.SeedRolesAsync(roleManager);
+            //await DefaultUsers.SeedAdminUserAsync(userManager);
+
 
             app.MapControllerRoute(
                 name: "default",

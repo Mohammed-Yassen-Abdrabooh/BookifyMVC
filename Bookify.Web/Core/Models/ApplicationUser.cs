@@ -6,8 +6,10 @@ namespace Bookify.Web.Core.Models
     {
         [MaxLength(100)]
         public string FullName { get; set; } = null!;
-        public bool IsDeleted { get; set; } 
+        public bool IsDeleted { get; set; }
+        public string? CreatedById { get; set; }
         public DateTime CreatedOn { get; set; } = DateTime.Now;
+        public string? LastUpdateById { get; set; }
         public DateTime? LastUpdateOn { get; set; }
     }
 }
