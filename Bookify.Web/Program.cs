@@ -3,6 +3,8 @@ using Bookify.Web.Seeds;
 using Microsoft.AspNetCore.Identity;
 using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
+using Microsoft.EntityFrameworkCore;
+using Bookify.Web.Data;
 
 namespace Bookify.Web
 {
@@ -16,18 +18,25 @@ namespace Bookify.Web
             var connectionString = builder.Configuration.GetConnectionString("DefaultConnection") ?? throw new InvalidOperationException("Connection string 'DefaultConnection' not found.");
             builder.Services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(connectionString));
+            
             builder.Services.AddDatabaseDeveloperPageExceptionFilter();
 
+            #region Why Do Not Use Identity Default
             // in case of using ApplicationUser class only without roles
-            builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
-                .AddEntityFrameworkStores<ApplicationDbContext>();
+            // and This Not Use Roles in the project if you add Admin Account with Admin Role and Assign To Controller Not Accessed
+            // For only Admins and You Use This DefautIdentity The Project Will Not Work With Roles and Give you Access Denied
+            ////builder.Services.AddDefaultIdentity<ApplicationUser>(options => options.SignIn.RequireConfirmedAccount = true)
+            ////    .AddEntityFrameworkStores<ApplicationDbContext>();
 
+            #endregion
+
+            #region Use Identity With Roles if You Assigned Roles in Project
             // in case of using ApplicationUser class with roles Must add DefaultUI and DefaultTokenProviders and The "DefaultTokenProviders" used for reset password and email confirmation
-            // Run only For the first time to create the roles in the database Then you can comment it and uncomment the above code
-            ////builder.Services.AddIdentity<ApplicationUser,IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
-            ////       .AddEntityFrameworkStores<ApplicationDbContext>()
-            ////       .AddDefaultUI()
-            ////       .AddDefaultTokenProviders();
+            builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
+                   .AddEntityFrameworkStores<ApplicationDbContext>()
+                   .AddDefaultUI()
+                   .AddDefaultTokenProviders();
+            #endregion
 
             builder.Services.AddControllersWithViews();
 
@@ -55,15 +64,14 @@ namespace Bookify.Web
             app.UseAuthentication();
             app.UseAuthorization();
 
-            // Run only for the first time to create the roles in the database Then you can comment it
-            //var scopeFactort = app.Services.GetRequiredService<IServiceScopeFactory>();
-            //using var scope = scopeFactort.CreateScope();
+            var scopeFactort = app.Services.GetRequiredService<IServiceScopeFactory>();
+            using var scope = scopeFactort.CreateScope();
 
-            //var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
-            //var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
+            var roleManager = scope.ServiceProvider.GetRequiredService<RoleManager<IdentityRole>>();
+            var userManager = scope.ServiceProvider.GetRequiredService<UserManager<ApplicationUser>>();
 
-            //await DefaultRoles.SeedRolesAsync(roleManager);
-            //await DefaultUsers.SeedAdminUserAsync(userManager);
+            await DefaultRoles.SeedRolesAsync(roleManager);
+            await DefaultUsers.SeedAdminUserAsync(userManager);
 
 
             app.MapControllerRoute(

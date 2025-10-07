@@ -183,7 +183,7 @@ var KTDatatables = function () {
 
 $(document).ready(function () {
     //Disable submit Button at Send Request if the Form is Valid
-    $('form').on('submit', function () {
+    $('form').not('#signOut').on('submit', function () {
         if ($(".js-tinymce").length > 0) {
             $(".js-tinymce").each(function () {
                 var input = $(this)
@@ -326,5 +326,10 @@ $(document).ready(function () {
                 }
             }
         });
-    })
+    });
+
+    // Handle SignOut Button
+    $(".js-signout").on("click", function () {
+        $("#signOut").submit();
+    });
 });

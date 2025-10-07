@@ -40,7 +40,8 @@ namespace Bookify.Web.Core.Mapping
             CreateMap<BookCopy, BookCopyFormViewModel>();
             CreateMap<BookCopyFormViewModel, BookCopyViewModel>();
 
-
+            // Mapping Users
+            CreateMap<ApplicationUser, UserViewModel>();
         }
     }
 }
