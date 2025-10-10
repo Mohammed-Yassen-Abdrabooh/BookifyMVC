@@ -7,6 +7,7 @@ namespace Bookify.Web.Core.ViewModels
         [MaxLength(100, ErrorMessage = Errors.MaxLengthError), Display(Name = "Category")]
         // Remote Annotation it take ActionName,ControllerName, Error Message "دي بتخليك تتشك علي القيمه موجوده ولا لا ف الاكشن "
         [Remote("AllowItem", "Category", AdditionalFields = "Id", ErrorMessage = Errors.DuplicatedError)]
+        [RegularExpression(RegexPatterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
         public string Name { get; set; } = null!;
     }
 }

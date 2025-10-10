@@ -32,7 +32,7 @@ function ShowErrorMessage(msg = "Something went wrong!") {
     Swal.fire({
         icon: "error",
         title: "Oops...",
-        text: msg,
+        text: msg.responseText != undefined ? msg.responseText : msg,
         customClass: {
             confirmButton: "btn btn-primary",
         }
@@ -72,6 +72,13 @@ function OnModalSuccess(row) {
 
 function OnModalComplete() {
     $('body :submit').removeAttr('disabled').removeAttr("data-kt-indicator"); // Disable all submit buttons to prevent multiple submissions
+}
+// Select2 Library Function
+function ApplySelect2() {
+    $(".js-select2").select2();
+    $(".js-select2").on("select2:select", function (e) {
+        $("form").not('#signOut').validate().element("#" + $(this).attr("id"));
+    })
 }
 
 //DataTables:
@@ -196,11 +203,8 @@ $(document).ready(function () {
             DisableSubmitButton(); 
 
     })
-    // Select2 Library ==> is used for enhancing select elements with search functionality use in BookModule To Show (Authors,Categories)
-    $(".js-select2").select2();
-    $(".js-select2").on("select2:select", function (e) {
-        $("form").validate().element("#" + $(this).attr("id"));
-    })
+    // Select2 Library ==>(Add Code in Function Above) is used for enhancing select elements with search functionality use in BookModule To Show (Authors,Categories)
+    ApplySelect2();
     // Date Range Picker ==> is used for filtering date ranges in BookModule Use in Publishing Date in Book Form
     $(".js-dateRangePicker").daterangepicker({
         singleDatePicker: true,
@@ -253,6 +257,7 @@ $(document).ready(function () {
                 // Re-parse the form to apply validation rules To Apply ClientSide Validation For Form in Modal this step
                 // after adding "jquery-ajax-unobtrusive" Liberary and put it To Run into _ValidationPartialView
                 $.validator.unobtrusive.parse(modal);
+                ApplySelect2();
             },
             error: function () {
                 ShowDeletedMessage();

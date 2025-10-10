@@ -1,0 +1,65 @@
+﻿@model UserFormViewModel
+
+<form asp-action="@(!string.IsNullOrEmpty(Model?.Id) ? "Edit" : "Create")"
+      data-ajax-method="post"
+      data-ajax="true"
+      data-ajax-begin="OnModalBegin"
+      data-ajax-success="OnModalSuccess"
+      data-ajax-failure="ShowErrorMessage"
+      data-ajax-complete="OnModalComplete">
+    @if (!string.IsNullOrEmpty(Model?.Id))
+    {
+        <input type="hidden" asp-for="Id" />
+    }
+    <!--begin::Input group-->
+    <div class="mb-3">
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control form-control-solid " asp-for="FullName" placeholder="Full Name" />
+            <label asp-for="FullName"></label>
+        </div>
+        <span asp-validation-for="FullName" class="ms-3 text-danger d-block"></span>
+    </div>
+    <div class="mb-3">
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control form-control-solid " asp-for="UserName" placeholder="UserName" />
+            <label asp-for="UserName"></label>
+        </div>
+        <span asp-validation-for="UserName" class="ms-3 text-danger d-block"></span>
+    </div>
+    <div class="mb-3">
+        <div class="form-floating mb-2">
+            <input type="text" class="form-control form-control-solid " asp-for="Email" placeholder="Email" />
+            <label asp-for="Email"></label>
+        </div>
+        <span asp-validation-for="Email" class="ms-3 text-danger d-block"></span>
+    </div>
+    <div class="mb-3">
+        <div class="mb-2">
+            <select class="form-select form-select-solid js-select2" data-placeholder="Select Roles" asp-for="SelectedRoles" asp-items="@Model?.Roles">
+                <option value="">Select Roles</option>
+            </select>
+        </div>
+        <span asp-validation-for="SelectedRoles" class="ms-3 text-danger d-block"></span>
+    </div>
+    @if (string.IsNullOrEmpty(Model?.Id))
+    {        
+        <div class="mb-3">
+            <div class="form-floating mb-2">
+                <input type="password" class="form-control form-control-solid " asp-for="Password" placeholder="Password" />
+                <label asp-for="Password"></label>
+            </div>
+            <span asp-validation-for="Password" class="ms-3 text-danger d-block"></span>
+        </div>
+        <div class="mb-3">
+            <div class="form-floating mb-2">
+                <input type="password" class="form-control form-control-solid " asp-for="ConfirmPassword" placeholder="Confirm Password" />
+                <label asp-for="ConfirmPassword"></label>
+            </div>
+            <span asp-validation-for="ConfirmPassword" class="ms-3 text-danger d-block"></span>
+        </div>
+    }
+
+
+    <partial name="_ModalFooterBtn" />
+    <!--end::Input group-->
+</form>

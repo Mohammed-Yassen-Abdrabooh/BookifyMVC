@@ -1,5 +1,7 @@
-﻿namespace Bookify.Web.Controllers
+﻿
+namespace Bookify.Web.Controllers
 {
+    [Authorize(Roles =AppRoles.Archive)]
     public class AuthorController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -32,6 +34,7 @@
                 return BadRequest();
 
             var author = _mapper.Map<Author>(model); // Use AutoMapper to map the model to the entity
+            author.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             _dbContext.Authors.Add(author);
             _dbContext.SaveChanges();
 
@@ -70,6 +73,7 @@
                 return NotFound();
 
             Author = _mapper.Map(model, Author);
+            Author.LastUpdateById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             Author.LastUpdateOn = DateTime.Now;
 
             _dbContext.Authors.Update(Author);
@@ -102,15 +106,15 @@
 
 
 
-        // Create Action To Prevent User To Add Duplicate Category Name by Client Side Validation
+        // Create Action To Prevent User To Add Duplicate Author Name by Client Side Validation
         public IActionResult AllowItem(AuthorFormViewModel model)
         {
-            // Upgrade it to Select The Category Which Has The Same Name Comming From Model "To Upgrade ==> if You Edit Categoty but Not Change Name in Another Modules Which Comming in Next Days" 
+            // Upgrade it to Select The Author Which Has The Same Name Comming From Model "To Upgrade ==> if You Edit Categoty but Not Change Name in Another Modules Which Comming in Next Days" 
             var author = _dbContext.Authors.SingleOrDefault(a => a.Name == model.Name);
-            var isAllowed = author is null || author.Id.Equals(model.Id); // If the category is null, it means the name does not exist in the database
+            var isAllowed = author is null || author.Id.Equals(model.Id); // If the Author is null, it means the name does not exist in the database
 
-            // If the category name already exists, return false ==> then it Run an Error Message
-            return Json(isAllowed); // Return true if the category name does not exist, false otherwise            
+            // If the Author name already exists, return false ==> then it Run an Error Message
+            return Json(isAllowed); // Return true if the Author name does not exist, false otherwise            
 
         }
     }

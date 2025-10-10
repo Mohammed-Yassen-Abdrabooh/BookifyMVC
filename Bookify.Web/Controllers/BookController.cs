@@ -6,6 +6,7 @@ using System.Linq.Dynamic.Core;
 
 namespace Bookify.Web.Controllers
 {
+    [Authorize(Roles = AppRoles.Archive)]
     public class BookController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -89,6 +90,8 @@ namespace Bookify.Web.Controllers
                 image.Mutate(i => i.Resize(width: 200 , height: height));
                 image.Save(thumbPath);
             }
+
+            book.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             foreach (var category in model.SelectedCategories)
             {
                 var bookCategory = new BookCategory{ CategoryId = category };
@@ -121,7 +124,7 @@ namespace Bookify.Web.Controllers
                 model = PopulateViewModel(model);
                 return View("Form", model);
             }
-            var book = _dbContext.Books.Include(b => b.Categories).FirstOrDefault(b => b.Id == model.Id);
+            var book = _dbContext.Books.Include(b => b.Categories).Include(bc=>bc.Copies).FirstOrDefault(b => b.Id == model.Id);
             if (book is null)
                 return NotFound();
 
@@ -173,11 +176,19 @@ namespace Bookify.Web.Controllers
             }
 
             book = _mapper.Map(model, book); // Update the book properties from the model
+            book.LastUpdateById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             book.LastUpdateOn = DateTime.Now; // Update the LastUpdateOn property
             foreach (var category in model.SelectedCategories)
             {
                 var bookCategory = new BookCategory { CategoryId = category };
                 book.Categories.Add(bookCategory);
+            }
+            if (!model.IsAvailableForRental)
+            {
+                foreach (var copy in book.Copies)
+                {
+                    copy.IsAvailableForRental = model.IsAvailableForRental ;
+                }
             }
 
             _dbContext.SaveChanges();
@@ -236,6 +247,7 @@ namespace Bookify.Web.Controllers
                 return NotFound();
             
             book.IsDeleted = !book.IsDeleted;// Toggle the IsDeleted status like if condition
+            book.LastUpdateById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             book.LastUpdateOn = DateTime.Now;
 
             _dbContext.Books.Update(book);

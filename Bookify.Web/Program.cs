@@ -30,13 +30,28 @@ namespace Bookify.Web
 
             #endregion
 
-            #region Use Identity With Roles if You Assigned Roles in Project
+            #region Use Identity With Roles if You Assigned Roles in Project 
             // in case of using ApplicationUser class with roles Must add DefaultUI and DefaultTokenProviders and The "DefaultTokenProviders" used for reset password and email confirmation
             builder.Services.AddIdentity<ApplicationUser, IdentityRole>(options => options.SignIn.RequireConfirmedAccount = true)
                    .AddEntityFrameworkStores<ApplicationDbContext>()
                    .AddDefaultUI()
                    .AddDefaultTokenProviders();
             #endregion
+
+            // Identity Password settings. There are The Default Settings Worked Without Write it But i'm Write it To Change Some Settings 
+            builder.Services.Configure<IdentityOptions>(options =>
+            {
+                // Default Password settings. I Will Do The Same Settings But using Regex in UserFormViewModel at ClientSideValidation
+                //options.Password.RequireDigit = true;
+                //options.Password.RequireLowercase = true;
+                //options.Password.RequireNonAlphanumeric = true;
+                //options.Password.RequireUppercase = true;
+                options.Password.RequiredLength = 8;//Minumum Length of Password
+                //options.Password.RequiredUniqueChars = 1;
+
+                // Configure User settings
+                options.User.RequireUniqueEmail = true;
+            });
 
             builder.Services.AddControllersWithViews();
 

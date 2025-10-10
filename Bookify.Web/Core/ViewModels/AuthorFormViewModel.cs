@@ -7,6 +7,7 @@
         [MaxLength(50, ErrorMessage = Errors.MaxLengthError), Display(Name = "Author")]
         // Remote Annotation it take ActionName,ControllerName, Error Message "دي بتخليك تتشك علي القيمه موجوده ولا لا ف الاكشن "
         [Remote("AllowItem", "Author", AdditionalFields = "Id", ErrorMessage = Errors.DuplicatedError)]
+        [RegularExpression(RegexPatterns.CharactersOnly_Eng, ErrorMessage = Errors.OnlyEnglishLetters)]
         public string Name { get; set; } = null!;
     }
 }

@@ -2,6 +2,7 @@
 
 namespace Bookify.Web.Controllers
 {
+    [Authorize(Roles = AppRoles.Archive)]
     public class CategoryController : Controller
     {
         private readonly ApplicationDbContext _dbContext;
@@ -47,6 +48,7 @@ namespace Bookify.Web.Controllers
                 return BadRequest();
 
             var category = _mapper.Map<Category>(model); // Use AutoMapper to map the model to the entity
+            category.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             _dbContext.Categories.Add(category);
             _dbContext.SaveChanges();
 
@@ -84,6 +86,7 @@ namespace Bookify.Web.Controllers
                 return NotFound();
 
             category = _mapper.Map(model, category);
+            category.LastUpdateById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             category.LastUpdateOn = DateTime.Now;
 
             _dbContext.Categories.Update(category);
@@ -117,6 +120,7 @@ namespace Bookify.Web.Controllers
 
 
             Categ.IsDeleted = !Categ.IsDeleted;// Toggle the IsDeleted status like if condition
+            Categ.LastUpdateById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
             Categ.LastUpdateOn = DateTime.Now;
 
             _dbContext.Categories.Update(Categ);

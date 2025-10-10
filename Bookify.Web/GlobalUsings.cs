@@ -8,3 +8,4 @@ global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 global using System.ComponentModel.DataAnnotations; // this using like Viewimports add this using to all Global Files 
 global using Microsoft.AspNetCore.Authorization;
+global using System.Security.Claims;
