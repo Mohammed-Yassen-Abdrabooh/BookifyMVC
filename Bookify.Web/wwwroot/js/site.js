@@ -333,6 +333,45 @@ $(document).ready(function () {
         });
     });
 
+    // Handle UnLock Button
+    $('body').delegate('.js-confirm', 'click', function () {
+        const $menu = $(this).closest('.menu-sub-dropdown');
+        $menu.hide();
+        var btn = $(this);
+        var id = btn.data('id');
+        // console.log(id);
+        // This Alert To Detect if Surely want To Change Status "Using Bootboxjs" as a nice shape from Default
+        bootbox.confirm({
+            message: btn.data('message'),
+            buttons: {
+                confirm: {
+                    label: 'Yes',
+                    className: 'btn-success'
+                },
+                cancel: {
+                    label: 'No',
+                    className: 'btn-secondary'
+                }
+            },
+            callback: function (result) {
+                if (result) {
+                    $.post({
+                        //if you write URL not url ==> it will Get Error 404
+                        url: btn.data('url'),
+                        data: {
+                            __RequestVerificationToken: $('input[name="__RequestVerificationToken"]').val()
+                        },
+                        success: function () {
+                                ShowSuccessMessage(SuccessMessage);
+                        },
+                        error: function () {
+                            ShowErrorMessage();
+                        }
+                    });
+                }
+            }
+        });
+    });
     // Handle SignOut Button
     $(".js-signout").on("click", function () {
         $("#signOut").submit();

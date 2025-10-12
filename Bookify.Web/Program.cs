@@ -5,6 +5,7 @@ using System.Reflection;
 using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
 using Bookify.Web.Data;
+using Bookify.Web.Helpers;
 
 namespace Bookify.Web
 {
@@ -51,7 +52,14 @@ namespace Bookify.Web
 
                 // Configure User settings
                 options.User.RequireUniqueEmail = true;
+
+                // Default Lockout settings. You Can Change it If You Want
+                // Default TimeSpoan is 5 minutes and MaxFailedAccessAttempts is 5
+                options.Lockout.DefaultLockoutTimeSpan = TimeSpan.FromMinutes(1);
+                options.Lockout.MaxFailedAccessAttempts = 3;
+                //options.Lockout.AllowedForNewUsers = true;
             });
+            builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
             builder.Services.AddControllersWithViews();
 

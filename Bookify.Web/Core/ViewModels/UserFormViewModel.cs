@@ -22,7 +22,6 @@ namespace Bookify.Web.Core.ViewModels
         [MaxLength(200, ErrorMessage = Errors.MaxLengthError)]
         [EmailAddress]
         [Remote("AllowEmail", "User", AdditionalFields = "Id", ErrorMessage = Errors.DuplicatedError)]
-
         public string Email { get; set; } = null!;
 
         [StringLength(100, ErrorMessage = Errors.MaxMinLengthError, MinimumLength = 8)]

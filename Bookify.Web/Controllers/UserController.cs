@@ -22,6 +22,7 @@ namespace Bookify.Web.Controllers
         }
         public async Task<IActionResult> Index()
         {
+            var user = User;
             var users = await _userManager.Users.ToListAsync();
             var userViewModel = _mapper.Map<IEnumerable<UserViewModel>>(users);
             return View(userViewModel);
@@ -192,6 +193,22 @@ namespace Bookify.Web.Controllers
             await _userManager.UpdateAsync(user);
             
             return Ok(user.LastUpdateOn.ToString());
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> UnLock(string id)
+        {
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user is null)
+                return NotFound();
+
+             var isLocked = await _userManager.IsLockedOutAsync(user);
+            if (isLocked)
+                await _userManager.SetLockoutEndDateAsync(user, null);
+
+            return Ok();
         }
 
 
