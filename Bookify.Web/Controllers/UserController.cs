@@ -118,6 +118,9 @@ namespace Bookify.Web.Controllers
                     await _userManager.RemoveFromRolesAsync(user, currentRoles);
                     await _userManager.AddToRolesAsync(user, model.SelectedRoles);
                 }
+                //this useed for if a user has a Role and the Admin Removes this Role The User Can't use Any Action For The Deleted Role
+                await _userManager.UpdateSecurityStampAsync(user);
+
                 var viewModel = _mapper.Map<UserViewModel>(user);
                 return PartialView("_UserRow", viewModel);
             }
@@ -191,6 +194,11 @@ namespace Bookify.Web.Controllers
             user.LastUpdateOn = DateTime.Now;
 
             await _userManager.UpdateAsync(user);
+
+            // if The userAccount Deleted by Admin and This User Was Loggin in Browser After Deleted his Account And This User Do Any action 
+            // Like Go To Books it Will SignOut him And Cannot Do Any Thing
+            if(user.IsDeleted)
+                await _userManager.UpdateSecurityStampAsync(user);
             
             return Ok(user.LastUpdateOn.ToString());
         }

@@ -7,6 +7,7 @@ using Microsoft.EntityFrameworkCore;
 using Bookify.Web.Data;
 using Bookify.Web.Helpers;
 
+
 namespace Bookify.Web
 {
     public class Program
@@ -39,6 +40,8 @@ namespace Bookify.Web
                    .AddDefaultTokenProviders();
             #endregion
 
+            // Add Services For Image Service
+            builder.Services.AddTransient<IImageService, ImageService>();
             // Identity Password settings. There are The Default Settings Worked Without Write it But i'm Write it To Change Some Settings 
             builder.Services.Configure<IdentityOptions>(options =>
             {
@@ -61,10 +64,16 @@ namespace Bookify.Web
             });
             builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
 
+            // This Service Used To :If an User Account Was Deleted or Deleted by its Role => Cannot Do Any Action if he Was Loighined in the App
+            // it Will Take Out To Login Page Again To Take The New Claims Or Not Access To Login Application
+            builder.Services.Configure<SecurityStampValidatorOptions>(options => 
+                options.ValidationInterval = TimeSpan.Zero);
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
             builder.Services.AddExpressiveAnnotations();
+
+            
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -8,6 +8,7 @@
         public const string CharactersOnly_Ar = "^[\u0600-\u065F\u066A-\u06EF\u06FA-\u06FF ]*$";
         public const string NumbersAndChrOnly_ArEng = "^(?=.*[\u0600-\u065F\u066A-\u06EF\u06FA-\u06FFa-zA-Z])[\u0600-\u065F\u066A-\u06EF\u06FA-\u06FFa-zA-Z0-9 _-]+$";
         public const string DenySpecialCharacters = "^[^<>!#%$]*$";
+        public const string EgyptianMobileNumber = "^01[0,1,2,5]{1}[0-9]{8}$";
 
     }
 }

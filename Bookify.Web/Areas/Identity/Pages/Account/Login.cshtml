@@ -67,9 +67,20 @@
 							<!--end::Email-->
 						</div>
 						<!--end::Input group=-->
-						<div class="fv-row mb-3">
+						<div class="fv-row mb-3" data-kt-password-meter="true">
 							<!--begin::Password-->
-							<input type="password" placeholder="Password" asp-for="Input.Password" autocomplete="off" class="form-control bg-transparent" />
+							<div class="position-relative">
+								<input type="password" placeholder="Password" asp-for="Input.Password" autocomplete="off" class="form-control bg-transparent" />
+
+								<!--begin::Visibility toggle-->
+								<span class="btn btn-sm btn-icon position-absolute translate-middle top-50 end-0 me-n2"
+									  data-kt-password-meter-control="visibility">
+									<i class="bi bi-eye-slash fs-2"></i>
+
+									<i class="bi bi-eye fs-2 d-none"></i>
+								</span>
+								<!--end::Visibility toggle-->
+							</div>
 							<span asp-validation-for="Input.Password" class="text-danger"></span>
 							<!--end::Password-->
 						</div>

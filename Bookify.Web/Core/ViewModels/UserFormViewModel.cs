@@ -24,8 +24,8 @@ namespace Bookify.Web.Core.ViewModels
         [Remote("AllowEmail", "User", AdditionalFields = "Id", ErrorMessage = Errors.DuplicatedError)]
         public string Email { get; set; } = null!;
 
-        [StringLength(100, ErrorMessage = Errors.MaxMinLengthError, MinimumLength = 8)]
         [DataType(DataType.Password)]
+        [StringLength(100, ErrorMessage = Errors.MaxMinLengthError, MinimumLength = 8)]
         [RegularExpression(RegexPatterns.Password,ErrorMessage = Errors.WeakPasswordError)]
         [RequiredIf("Id == null",ErrorMessage = Errors.RequiredFieldError)]
         public string? Password { get; set; } = null!;
