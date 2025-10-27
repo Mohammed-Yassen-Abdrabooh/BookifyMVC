@@ -1,8 +1,12 @@
 ﻿using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.EntityFrameworkCore;
 using System.Security.Claims;
+using System.Text;
+using System.Text.Encodings.Web;
 using System.Threading.Tasks;
 
 namespace Bookify.Web.Controllers
@@ -12,17 +16,27 @@ namespace Bookify.Web.Controllers
     {
         private readonly UserManager<ApplicationUser> _userManager;
         private readonly RoleManager<IdentityRole> _roleManager;
+        private readonly SignInManager<ApplicationUser> _signInManager;
+        private readonly IEmailSender _emailSender;
+        private readonly IWebHostEnvironment _webHostEnvironment;
+        private readonly IEmailBodyBuilder _emailBodyBuilder;
         private readonly IMapper _mapper;
 
-        public UserController(UserManager<ApplicationUser> userManager,RoleManager<IdentityRole> roleManager,IMapper mapper)
+        public UserController(UserManager<ApplicationUser> userManager,
+            RoleManager<IdentityRole> roleManager,
+            SignInManager<ApplicationUser> signInManager,
+            IEmailSender emailSender, IWebHostEnvironment webHostEnvironment, IEmailBodyBuilder emailBodyBuilder, IMapper mapper)
         {
             _userManager = userManager;
             _roleManager = roleManager;
+            _signInManager = signInManager;
+            _emailSender = emailSender;
+            _webHostEnvironment = webHostEnvironment;
+            _emailBodyBuilder = emailBodyBuilder;
             _mapper = mapper;
         }
         public async Task<IActionResult> Index()
         {
-            var user = User;
             var users = await _userManager.Users.ToListAsync();
             var userViewModel = _mapper.Map<IEnumerable<UserViewModel>>(users);
             return View(userViewModel);
@@ -62,6 +76,24 @@ namespace Bookify.Web.Controllers
             if (result.Succeeded)
             {
                await _userManager.AddToRolesAsync(user, model.SelectedRoles);
+                var code = await _userManager.GenerateEmailConfirmationTokenAsync(user);
+                code = WebEncoders.Base64UrlEncode(Encoding.UTF8.GetBytes(code));
+                var callbackUrl = Url.Page(
+                        "/Account/ConfirmEmail",
+                        pageHandler: null,
+                        values: new { area = "Identity", userId = user.Id, code = code },
+                        protocol: Request.Scheme);
+
+                var body = _emailBodyBuilder.GetEmailBody(
+                    "https://res.cloudinary.com/yassen-bookify/image/upload/v1761015504/icon-positive-vote-1_mroq3c.png",
+                    $"Hey {user.FullName} , Thanks for joining us!",
+                    "Please Confirm Your Email",
+                    $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
+                    "Active Account!"
+                    );
+
+                await _emailSender.SendEmailAsync(user.Email, "Confirm your email",body);
+
 
                 var viewModel = _mapper.Map<UserViewModel>(user);
                 return PartialView("_UserRow",viewModel);

@@ -1,5 +1,7 @@
 ﻿using Bookify.Web.Core.ViewModels;
+using CloudinaryDotNet;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Microsoft.Extensions.Options;
 using SixLabors.ImageSharp;
 using SixLabors.ImageSharp.Processing;
 using System.Linq.Dynamic.Core;
@@ -11,18 +13,28 @@ namespace Bookify.Web.Controllers
     {
         private readonly ApplicationDbContext _dbContext;
         private readonly IMapper _mapper;
+        //private readonly CloudinarySettings _cloudinary;
         private readonly IWebHostEnvironment _webHostEnvironment; // Used to get the WWWroot path for file uploads "Saved Files Upload in wwwroot"
         private readonly IImageService _imageService;
         private List<string> _allowedExtensions = new() { ".jpg", ".jpeg", ".png", ".gif" };
         private int _maxFileSize = 2097152; // 2 MB = 2 * 1024 * 1024;
 
         public BookController(ApplicationDbContext dbContext, IMapper mapper
-              ,IWebHostEnvironment webHostEnvironment,IImageService imageService)
+              , IWebHostEnvironment webHostEnvironment, IImageService imageService)
         {
             _dbContext = dbContext;
             _mapper = mapper;
             _webHostEnvironment = webHostEnvironment;
             _imageService = imageService;
+
+            //Account account = new ()
+            //{
+            //    Cloud = cloudinary.Value.Cloud,
+            //    ApiKey = cloudinary.Value.ApiKey,
+            //    ApiSecret = cloudinary.Value.ApiSecret
+            //};
+
+            //_cloudinary = new Cloudinary(account);
         }
         public IActionResult Index()
         {

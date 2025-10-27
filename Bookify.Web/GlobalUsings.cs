@@ -10,3 +10,4 @@ global using System.ComponentModel.DataAnnotations; // this using like Viewimpor
 global using Microsoft.AspNetCore.Authorization;
 global using System.Security.Claims;
 global using Bookify.Web.Servieces;
+global using Bookify.Web.Settings;

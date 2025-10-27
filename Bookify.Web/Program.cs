@@ -7,6 +7,8 @@ using Microsoft.EntityFrameworkCore;
 using Bookify.Web.Data;
 using Bookify.Web.Helpers;
 
+using Microsoft.AspNetCore.Identity.UI.Services;
+
 
 namespace Bookify.Web
 {
@@ -42,6 +44,8 @@ namespace Bookify.Web
 
             // Add Services For Image Service
             builder.Services.AddTransient<IImageService, ImageService>();
+            builder.Services.AddTransient<IEmailSender, EmailSender>();
+            builder.Services.AddTransient<IEmailBodyBuilder, EmailBodyBuilder>();
             // Identity Password settings. There are The Default Settings Worked Without Write it But i'm Write it To Change Some Settings 
             builder.Services.Configure<IdentityOptions>(options =>
             {
@@ -71,6 +75,8 @@ namespace Bookify.Web
             builder.Services.AddControllersWithViews();
 
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
+            builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(nameof(CloudinarySettings)));
+            builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
             builder.Services.AddExpressiveAnnotations();
 
             
