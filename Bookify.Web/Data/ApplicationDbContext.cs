@@ -9,11 +9,14 @@ namespace Bookify.Web.Data
             : base(options)
         {
         }
+        public DbSet<Area> Areas { get; set; }
         public DbSet<Author> Authors { get; set; }
         public DbSet<Book> Books { get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
         public DbSet<BookCopy> BookCopies { get; set; }
+        public DbSet<Governorate> Governorates { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Subscriber> Subscribers { get; set; }
 
 
 
@@ -26,6 +29,13 @@ namespace Bookify.Web.Data
             //builder.Entity<Category>().Property(e => e.CreatedOn).HasDefaultValueSql("GETDATE()"); // We Use it to Put Date now for this Prop in SQL   
             builder.HasSequence<int>("SerialNumber",schema:"Shared").StartsAt(1000001); // Create Sequence in SQL to use it in BookCopy SerialNumber
             builder.Entity<BookCopy>().Property(bc=>bc.SerialNumber).HasDefaultValueSql("NEXT VALUE FOR Shared.SerialNumber"); // Use Sequence in SerialNumber Prop
+            // Change Delete Behavior to Restrict to avoid Cascade Delete For All Foreign Keys
+            var cascadeFKs = builder.Model.GetEntityTypes()
+                .SelectMany(t=>t.GetForeignKeys())
+                .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade && !fk.IsOwnership  );
+            foreach(var fk in cascadeFKs)
+                fk.DeleteBehavior = DeleteBehavior.Restrict;
+
             base.OnModelCreating(builder);
         }
     }

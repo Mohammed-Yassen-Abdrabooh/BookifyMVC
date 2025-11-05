@@ -19,6 +19,11 @@
         public const string OnlyNumbersAndLetters = "Only Arabic/English letters or digits are allowed.";
         public const string DenySpecialCharacters = "Special characters are not allowed.";
         public const string AllowEgyptianNumberError = "Egyptian Phone Numbers Only Allowed.";
+        public const string AllowEgyptianNationalIdError = "Egyptian National Id Numbers Only Allowed.";
+        public const string DuplicatedNationalIdError = "Another Subscriber Has This National Id.";
+        public const string DuplicatedMobileNumberError = "Another Subscriber Has This Mobile Number.";
+        public const string DuplicatedEmailError = "Another Subscriber Has This Email.";
+        public const string EmptyImageError = "Must Use an Image For You.";
 
 
 

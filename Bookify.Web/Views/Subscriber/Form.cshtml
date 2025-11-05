@@ -1,0 +1,195 @@
+﻿@model SubscriberFormViewModel
+@{
+   ViewData["title"] = "Subscriber Form";
+}
+
+<div class="card shadow-sm">
+    <!--Start Card Header-->
+    <div class="card-header">
+        <h3 class="card-title">@(Model.Id.Equals(0) ? "Add" : "Edit") Subscriber</h3>
+    </div>
+    <!--End Card Header-->
+    <!--Start Card Body-->
+    <div class="card-body">
+        <!--enctype="multipart/form-data" ==> To Take Uploaded Files By Form-->
+        <form method="post" asp-controller="Subscriber" enctype="multipart/form-data" id="Form">
+            @if (Model.Id > 0)
+            {
+                <input type="hidden" asp-for="Id" />
+            }
+            <!--begin::Image input-->
+            <div class="row mb-6">
+                <label class="col-md-4 col-form-label required fw-semibold fs-6" asp-for="Image"></label>
+                <div class="col-md-8">
+                    <!--begin::Image input-->
+                    <div class="image-input image-input-empty" data-kt-image-input="true" style="background-image: url(@(string.IsNullOrEmpty(Model.ImageUrl) ? "/assets/images/avatar-blank.svg" : Model.ImageThumbnailUrl)); background-position: center;)">
+                        <!--begin::Image preview wrapper-->
+                        <div class="image-input-wrapper w-100px h-150px" style="background-position:center;"></div>
+                        <!--end::Image preview wrapper-->
+                        <!--begin::Edit button-->
+                        <label class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                                data-kt-image-input-action="change"
+                                data-bs-dismiss="click">
+                            <i class="bi bi-pencil-fill fs-7"></i>
+
+                            <!--begin::Inputs-->
+                            <input type="file" asp-for="Image" accept=".png, .jpg, .jpeg, .gif" />
+                            <input type="hidden" name="avatar_remove" />
+                            <!--end::Inputs-->
+                        </label>
+                        <!--end::Edit button-->
+                        <!--begin::Cancel button-->
+                        <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                                data-kt-image-input-action="cancel"
+                                data-bs-dismiss="click">
+                            <i class="bi bi-x fs-2"></i>
+                        </span>
+                        <!--end::Cancel button-->
+                        <!--begin::Remove button-->
+                        <span class="btn btn-icon btn-circle btn-color-muted btn-active-color-primary w-25px h-25px bg-body shadow"
+                                data-kt-image-input-action="remove"
+                                data-bs-dismiss="click">
+                            <i class="bi bi-x fs-2"></i>
+                        </span>
+                        <!--end::Remove button-->
+                    </div>
+                    <div class="form-text">Allowed File Types: " png, jpeg, jpg, gif " and Cannot be more than 2 MB</div>
+                    <span asp-validation-for="Image" class="text-danger d-block"></span>
+                    <!--end::Image input-->
+                </div>
+             </div>
+            <!--End::Image input-->
+            <!--begin::First & Last Name input-->
+            <div class="row mb-6">
+                <label class="col-md-4 col-form-label required fw-semibold fs-6">Full Name</label>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class=" mb-2">
+                                <input type="text" class="form-control form-control-solid" asp-for="FirstName" placeholder="First Name" />
+                                <span asp-validation-for="FirstName" class="ms-3 text-danger d-block"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <input type="text" class="form-control form-control-solid" asp-for="LastName" placeholder="Last Name" />
+                                <span asp-validation-for="LastName" class="ms-3 text-danger d-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--End::First & Last Name input-->
+            <!--begin::Bitrth of Date input-->
+            <div class="row mb-6">
+                <label class="col-md-4 col-form-label required fw-semibold fs-6" asp-for="BirthOfDate"></label>
+                <div class="col-md-8">
+                    <div class="mb-2">
+                        <!--Conver input Type from Date To text ==> To Use DateRangePicker Library Which isnstalled in Metronic Theme-->
+                        <input type="text" class="form-control form-control-solid js-dateRangePicker" asp-for="BirthOfDate" placeholder="Date of Birth" />
+                        <span asp-validation-for="BirthOfDate" class="ms-3 text-danger d-block"></span>
+                    </div>
+                </div>
+            </div>
+            <!--End::Bitrth of Date input-->
+            <!--begin::National ID input-->
+            <div class="row mb-6">
+                <label class="col-md-4 col-form-label required fw-semibold fs-6" asp-for="NationalId"></label>
+                <div class="col-md-8">
+                    <div class="mb-2">
+                        <input type="text" class="form-control form-control-solid" asp-for="NationalId" placeholder="National ID" />
+                        <span asp-validation-for="NationalId" class="ms-3 text-danger d-block"></span>
+                    </div>
+                </div>
+            </div>
+            <!--End::Bitrth of Date input-->
+            <!--begin::Email & Mobile Number input-->
+            <div class="row mb-6">
+                <label class="col-md-4 col-form-label required fw-semibold fs-6">Contacts</label>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class=" mb-2">
+                                <input type="email" class="form-control form-control-solid" asp-for="Email" placeholder="Email" />
+                                <span asp-validation-for="Email" class="ms-3 text-danger d-block"></span>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <input type="text" class="form-control form-control-solid" asp-for="MobileNumber" placeholder="Mobile Number" />
+                                <span asp-validation-for="MobileNumber" class="ms-3 text-danger d-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--End::Email & Mobile Number input-->
+            <!--begin::Governorate & Area input-->
+            <div class="row mb-6">
+                <label class="col-md-4 col-form-label required fw-semibold fs-6">Governorate/Area</label>
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-6">
+                            <div class=" mb-2">
+                                <select class="form-select form-select-solid js-select2" data-placeholder="Select a Governorate" asp-for="GovernorateId" asp-items="@Model.Governorates">
+                                    <option value="">Select Governorate</option>
+                                </select>
+                                <span asp-validation-for="GovernorateId" class="ms-3 text-danger d-block"></span>
+                            </div>
+                        </div>
+                        <!--Areas values it will get using jq to Get Areas in The GovernorateId using Action in Controller and jq in Subscriber.js-->
+                        <div class="col-md-6">
+                            <div class="mb-2">
+                                <select class="form-select form-select-solid js-select2" data-placeholder="Select an Area" asp-for="AreaId" asp-items="@Model.Areas">
+                                    <option value="">Select Area</option>
+                                </select>
+                                <span asp-validation-for="AreaId" class="ms-3 text-danger d-block"></span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!--End::Governorate & Area input-->
+            <!--begin::Address input-->
+            <div class="row mb-6">
+                <label class="col-md-4 col-form-label required fw-semibold fs-6" asp-for="Address"></label>
+                <div class="col-md-8">
+                    <div class="mb-2">
+                        <textarea class="form-control form-control-solid" asp-for="Address" placeholder="Address" style="max-height:200px;min-height:50px;"></textarea>
+                        <span asp-validation-for="Address" class="ms-3 text-danger d-block"></span>
+                    </div>
+                </div>
+            </div>
+            <!--End::Address input-->
+            <!--begin::Has WhatsApp input-->
+            <div class="row mb-6">
+                <label class="col-md-4 col-form-label required fw-semibold fs-6" asp-for="HasWhatsApp"></label>
+                <div class="col-md-8">
+                    <div class="form-check form-switch form-check-solid form-check-custom  mb-2">
+                        <input class="form-check-input" type="checkbox" asp-for="HasWhatsApp" />
+                        <label class="form-check-label">Yes</label>
+                    </div>
+                </div>
+            </div>
+            <!--End::Has WhatsApp input-->
+        </form>
+    </div>
+    <!--End Card Body-->
+    <!--Start Card Footer-->
+    <div class="card-footer">
+        <button type="submit" class="btn btn-primary" form="Form">
+            <span class="indicator-label">
+                Save
+            </span>
+            <span class="indicator-progress">
+                Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+            </span>
+        </button>
+        <a class="btn btn-light text-primary ms-3" asp-action="Index">Cancel</a>
+    </div>
+    <!--End Card Footer-->
+</div>
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+    <script src="~/js/subscriberform.js" asp-append-version="true" ></script>
+}
