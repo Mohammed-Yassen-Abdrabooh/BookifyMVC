@@ -5,7 +5,8 @@ namespace Bookify.Web.Core.ViewModels
 {
     public class SubscriberFormViewModel
     {
-        public int Id { get; set; }
+        //public int Id { get; set; }
+        public string? Key { get; set; }
         [Display(Name = "First Name")]
         [MaxLength(100,ErrorMessage = Errors.MaxLengthError)]
         [RegularExpression(RegexPatterns.DenySpecialCharacters, ErrorMessage = Errors.DenySpecialCharacters)]
@@ -20,21 +21,21 @@ namespace Bookify.Web.Core.ViewModels
         [Display(Name = "National Id")]
         [MaxLength(14, ErrorMessage = Errors.MaxLengthError)]
         [RegularExpression(RegexPatterns.NationalId,ErrorMessage = Errors.AllowEgyptianNationalIdError)]
-        [Remote("AllowNationalId","Subscriber",AdditionalFields ="Id",ErrorMessage = Errors.DuplicatedNationalIdError)]
+        [Remote("AllowNationalId","Subscriber",AdditionalFields ="Key",ErrorMessage = Errors.DuplicatedError)]
         public string NationalId { get; set; } = null!;
         [Display(Name = "Mobile Number")]
         [MaxLength(11, ErrorMessage = Errors.MaxLengthError)]
         [RegularExpression(RegexPatterns.EgyptianMobileNumber, ErrorMessage = Errors.AllowEgyptianNumberError)]
-        [Remote("AllowMobileNumber", "Subscriber", AdditionalFields = "Id", ErrorMessage = Errors.AllowEgyptianNumberError)]
+        [Remote("AllowMobileNumber", "Subscriber", AdditionalFields = "Key", ErrorMessage = Errors.DuplicatedError)]
 
         public string MobileNumber { get; set; } = null!;
         [Display(Name = "Has WhatsApp?")]
         public bool HasWhatsApp { get; set; }
         [MaxLength(150, ErrorMessage = Errors.MaxLengthError)]
-        [Remote("AllowEmail", "Subscriber", AdditionalFields = "Id", ErrorMessage = Errors.DuplicatedEmailError)]
+        [Remote("AllowEmail", "Subscriber", AdditionalFields = "Key", ErrorMessage = Errors.DuplicatedError)]
         [EmailAddress]
         public string Email { get; set; } = null!;
-        [RequiredIf("Id == 0", ErrorMessage = Errors.EmptyImageError)]
+        [RequiredIf("Key == ''", ErrorMessage = Errors.EmptyImageError)]
         public IFormFile? Image { get; set; }
 
         //Nav property to Area

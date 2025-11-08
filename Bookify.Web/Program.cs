@@ -8,6 +8,7 @@ using Bookify.Web.Data;
 using Bookify.Web.Helpers;
 
 using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.AspNetCore.DataProtection;
 
 
 namespace Bookify.Web
@@ -67,12 +68,13 @@ namespace Bookify.Web
                 //options.Lockout.AllowedForNewUsers = true;
             });
             builder.Services.AddScoped<IUserClaimsPrincipalFactory<ApplicationUser>, ApplicationUserClaimsPrincipalFactory>();
-
             // This Service Used To :If an User Account Was Deleted or Deleted by its Role => Cannot Do Any Action if he Was Loighined in the App
             // it Will Take Out To Login Page Again To Take The New Claims Or Not Access To Login Application
             builder.Services.Configure<SecurityStampValidatorOptions>(options => 
                 options.ValidationInterval = TimeSpan.Zero);
             builder.Services.AddControllersWithViews();
+            // Configure Data Protection To Sequered Application Like Id 
+            builder.Services.AddDataProtection().SetApplicationName(nameof(Bookify));
 
             builder.Services.AddAutoMapper(Assembly.GetAssembly(typeof(MappingProfile)));
             builder.Services.Configure<CloudinarySettings>(builder.Configuration.GetSection(nameof(CloudinarySettings)));

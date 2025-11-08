@@ -6,16 +6,16 @@
 <div class="card shadow-sm">
     <!--Start Card Header-->
     <div class="card-header">
-        <h3 class="card-title">@(Model.Id.Equals(0) ? "Add" : "Edit") Subscriber</h3>
+        <h3 class="card-title">@(string.IsNullOrEmpty(Model.Key) ? "Add" : "Edit") Subscriber</h3>
     </div>
     <!--End Card Header-->
     <!--Start Card Body-->
     <div class="card-body">
         <!--enctype="multipart/form-data" ==> To Take Uploaded Files By Form-->
         <form method="post" asp-controller="Subscriber" enctype="multipart/form-data" id="Form">
-            @if (Model.Id > 0)
+            @if (!string.IsNullOrEmpty(Model.Key))
             {
-                <input type="hidden" asp-for="Id" />
+                <input type="hidden" asp-for="Key" />
             }
             <!--begin::Image input-->
             <div class="row mb-6">
