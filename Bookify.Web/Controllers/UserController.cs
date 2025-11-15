@@ -84,13 +84,16 @@ namespace Bookify.Web.Controllers
                         values: new { area = "Identity", userId = user.Id, code = code },
                         protocol: Request.Scheme);
 
-                var body = _emailBodyBuilder.GetEmailBody(
-                    "https://res.cloudinary.com/yassen-bookify/image/upload/v1761015504/icon-positive-vote-1_mroq3c.png",
-                    $"Hey {user.FullName} , Thanks for joining us!",
-                    "Please Confirm Your Email",
-                    $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
-                    "Active Account!"
-                    );
+                var placeholders = new Dictionary<string, string>()
+                {
+                    { "imageUrl" , "https://res.cloudinary.com/yassen-bookify/image/upload/v1761015504/icon-positive-vote-1_mroq3c.png" },
+                    { "header" , $"Hey {user.FullName} , Thanks for joining us!" },
+                    { "body" , "Please Confirm Your Emaill" },
+                    { "url" , $"{HtmlEncoder.Default.Encode(callbackUrl!)}" },
+                    { "linkTitle" , "Active Account!" }
+                };
+
+                var body = _emailBodyBuilder.GetEmailBody(MailTemplates.Email , placeholders );
 
                 await _emailSender.SendEmailAsync(user.Email, "Confirm your email",body);
 

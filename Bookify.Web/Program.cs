@@ -1,14 +1,14 @@
 using Bookify.Web.Core.Mapping;
-using Bookify.Web.Seeds;
-using Microsoft.AspNetCore.Identity;
-using System.Reflection;
-using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using Bookify.Web.Data;
 using Bookify.Web.Helpers;
-
-using Microsoft.AspNetCore.Identity.UI.Services;
+using Bookify.Web.Seeds;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Identity;
+using Microsoft.AspNetCore.Identity.UI.Services;
+using Microsoft.EntityFrameworkCore;
+using System.Reflection;
+using UoN.ExpressiveAnnotations.NetCore.DependencyInjection;
+using WhatsAppCloudApi.Extensions;
 
 
 namespace Bookify.Web
@@ -81,7 +81,9 @@ namespace Bookify.Web
             builder.Services.Configure<MailSettings>(builder.Configuration.GetSection(nameof(MailSettings)));
             builder.Services.AddExpressiveAnnotations();
 
-            
+            // Configure WhatsApp API Client Service This Package Created By Elhelaly
+            builder.Services.AddWhatsAppApiClient(builder.Configuration);
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.

@@ -129,13 +129,16 @@ namespace Bookify.Web.Areas.Identity.Pages.Account.Manage
                     values: new { area = "Identity", userId = userId, email = Input.NewEmail, code = code },
                     protocol: Request.Scheme);
 
+                var placeholders = new Dictionary<string, string>()
+                {
+                    { "imageUrl" , "https://res.cloudinary.com/yassen-bookify/image/upload/v1761162282/icon-positive-vote-2_ts4kvu.png" },
+                    { "header" , $"Hey {user.FullName}" },
+                    { "body" , "Please Confirm Your Emai" },
+                    { "url" , $"{HtmlEncoder.Default.Encode(callbackUrl!)}" },
+                    { "linkTitle" , "Confirm Email" }
+                };
 
-                var body = _emailBodyBuilder.GetEmailBody(
-                        "https://res.cloudinary.com/yassen-bookify/image/upload/v1761162282/icon-positive-vote-2_ts4kvu.png",
-                        $"Hey {user.FullName}",
-                        "Please Confirm Your Email",
-                        $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
-                        "Confirm Email");
+                var body = _emailBodyBuilder.GetEmailBody(MailTemplates.Email , placeholders);
 
                 await _emailSender.SendEmailAsync(email, "Confirm your email", body);
 
@@ -171,12 +174,16 @@ namespace Bookify.Web.Areas.Identity.Pages.Account.Manage
                 values: new { area = "Identity", userId = userId, code = code },
                 protocol: Request.Scheme);
 
-            var body = _emailBodyBuilder.GetEmailBody(
-                    "https://res.cloudinary.com/yassen-bookify/image/upload/v1761162282/icon-positive-vote-2_ts4kvu.png",
-                    $"Hey {user.FullName}",
-                    "Please Confirm Your Email",
-                    $"{HtmlEncoder.Default.Encode(callbackUrl!)}",
-                    "Confirm Email");
+            var placeholders = new Dictionary<string, string>()
+            {
+                { "imageUrl" , "https://res.cloudinary.com/yassen-bookify/image/upload/v1761162282/icon-positive-vote-2_ts4kvu.png" },
+                { "header" , $"Hey {user.FullName}" },
+                { "body" , "\"Please Confirm Your Email" },
+                { "url" , $"{HtmlEncoder.Default.Encode(callbackUrl!)}" },
+                { "linkTitle" , "Confirm Email" }
+            };
+
+            var body = _emailBodyBuilder.GetEmailBody(MailTemplates.Email , placeholders);
 
             await _emailSender.SendEmailAsync(email,"Confirm your email",body);
 
