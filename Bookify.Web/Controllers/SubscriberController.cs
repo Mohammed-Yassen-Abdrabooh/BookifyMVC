@@ -40,9 +40,7 @@ namespace Bookify.Web.Controllers
         }
         public IActionResult Index()
         {
-            //var result = await _whatsAppClient.SendMessage("201094046114",
-            //                            WhatsAppLanguageCode.English_US,
-            //                            "bookify_welcome_message");
+
             return View();
         }
 
@@ -134,31 +132,31 @@ namespace Bookify.Web.Controllers
             if (model.HasWhatsApp)
             {
                 // use New Created Template with Parameter in Meta WhatsApp Cloud Api and How Send Variables in it, While using "WhatsAppApiClient" Package by Elhelaly
-                // var components = new List<WhatsAppComponent>()
-                //{
-                //    new WhatsAppComponent
-                //    {
-                //        Type = "body",
-                //        Parameters = new List<object>()
-                //        {
-                //            new WhatsAppTextParameter { Text = $"{model.FirstName} {model.LastName}"},
-                //        }
-                //    }
-                //};
-
-                //var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01094046114" : model.MobileNumber;
-                // This Not Work because WhatsApp Message Template Not Approved as Utility but Approved as Marketing so we must use "bookify_welcome_message" Template
-                // Then We Use The Default Template "hello_world" from Meta for Testing Purpose
-                // Now After Adding "message_bookify" Which Created by ChatGPT and Approved as Utility Template We Can Use it Here
-                //await _whatsAppClient.SendMessage($"2{mobileNumber}",
-                //                                        WhatsAppLanguageCode.English_US,
-                //                                        WhatsAppTemplates.BookifyMessage, components);
+                var components = new List<WhatsAppComponent>()
+                {
+                    new WhatsAppComponent
+                    {
+                        Type = "body",
+                        Parameters = new List<object>()
+                        {
+                            new WhatsAppTextParameter { Text = $"{model.FirstName} {model.LastName}"},
+                        }
+                    }
+                };
 
                 var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01094046114" : model.MobileNumber;
-
+                // This Not Work because WhatsApp Message Template Not Approved as Utility but Approved as Marketing so we must use "bookify_welcome_message" Template
+                // Then We Use The Default Template "hello_world" from Meta for Testing Purpose
+                // Now After Adding "message_bookify","bookify_subscriber_message" Which Created by ChatGPT and Approved as Utility Template We Can Use it Here
                 await _whatsAppClient.SendMessage($"2{mobileNumber}",
                                                         WhatsAppLanguageCode.English_US,
-                                                        WhatsAppTemplates.MetaWelcomeMessage);
+                                                        WhatsAppTemplates.BookifyMessage, components);
+
+                //var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01094046114" : model.MobileNumber;
+
+                //await _whatsAppClient.SendMessage($"2{mobileNumber}",
+                //                                        WhatsAppLanguageCode.English_US,
+                //                                        WhatsAppTemplates.MetaWelcomeMessage);
 
             }
             var subscriberId = _dataProtector.Protect(subscriber.Id.ToString());
