@@ -63,7 +63,10 @@ namespace Bookify.Web.Controllers
         public IActionResult Details(string id)
         {
             var subscriberId = int.Parse(_dataProtector.Unprotect(id));
-            var subscriber = _dbContext.Subscribers.Include(s => s.Area).Include(s => s.Governorate).SingleOrDefault(s => s.Id == subscriberId);
+            var subscriber = _dbContext.Subscribers.Include(s => s.Area)
+                                                   .Include(s => s.Governorate)
+                                                   .Include(s => s.Subscriptions)
+                                                   .SingleOrDefault(s => s.Id == subscriberId);
 
             if (subscriber is null)
                 return NotFound();
@@ -108,9 +111,18 @@ namespace Bookify.Web.Controllers
 
             subscriber.ImageUrl = $"/images/subscribers/{imageName}";
             subscriber.ImageThumbnailUrl = $"/images/subscribers/thumb/{imageName}";
-
-
             subscriber.CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value;
+
+            Subscription subscription = new()
+            {
+                CreatedById = subscriber.CreatedById,
+                CreatedOn = subscriber.CreatedOn,
+                StartDate = DateTime.Today,
+                EndDate = DateTime.Today.AddYears(1)
+            };
+
+            subscriber.Subscriptions.Add(subscription);
+
             _dbContext.Subscribers.Add(subscriber);
             _dbContext.SaveChanges();
 
@@ -152,11 +164,6 @@ namespace Bookify.Web.Controllers
                                                         WhatsAppLanguageCode.English_US,
                                                         WhatsAppTemplates.BookifyMessage, components);
 
-                //var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01094046114" : model.MobileNumber;
-
-                //await _whatsAppClient.SendMessage($"2{mobileNumber}",
-                //                                        WhatsAppLanguageCode.English_US,
-                //                                        WhatsAppTemplates.MetaWelcomeMessage);
 
             }
             var subscriberId = _dataProtector.Protect(subscriber.Id.ToString());
@@ -230,6 +237,79 @@ namespace Bookify.Web.Controllers
 
             _dbContext.SaveChanges();
             return RedirectToAction(nameof(Index), new { id = model.Key  });
+        }
+
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> RenewSubscription(string sKey)
+        {
+            var subscriberId = int.Parse(_dataProtector.Unprotect(sKey));
+
+            var subscriber = _dbContext.Subscribers.Include(s=> s.Subscriptions).SingleOrDefault(s => s.Id == subscriberId);
+            if (subscriber is null)
+                return NotFound();
+
+            if(subscriber.IsBlackListed)
+                return BadRequest("Cannot Renew Subscription for BlackListed Subscriber.");
+
+            var lastSubscription = subscriber.Subscriptions.Last();
+
+            var startDate =  lastSubscription.EndDate < DateTime.Today ? DateTime.Today : lastSubscription.EndDate.AddDays(1);
+
+            Subscription newSubscription = new()
+            {
+                CreatedById = User.FindFirst(ClaimTypes.NameIdentifier)!.Value,
+                CreatedOn = DateTime.Now,
+                StartDate = startDate,
+                EndDate = startDate.AddYears(1)
+            };
+
+            subscriber.Subscriptions.Add(newSubscription);
+            _dbContext.SaveChanges();
+
+            // TODO : Send Email and WhatsApp Message to Subscriber to Notify Him about Subscription Renewal
+
+            //Send Welcome Email to Subscriber
+
+            var placeholders = new Dictionary<string, string>()
+            {
+                { "imageUrl" , "https://res.cloudinary.com/yassen-bookify/image/upload/v1761162282/icon-positive-vote-2_ts4kvu.jpeg" },
+                { "header" , $"Hello {subscriber.FirstName} {subscriber.LastName}" },
+                { "body" , $"Your subscription renewal has been updated. Your subscription ends on {newSubscription.EndDate.ToString("dd MMM, yyyy")}" }
+            };
+
+            var body = _emailBodyBuilder.GetEmailBody(MailTemplates.Notification, placeholders);
+            var email = _webHostEnvironment.IsDevelopment() ? "mohammedyassen.pc@gmail.com" : subscriber.Email;
+
+            await _emailSender.SendEmailAsync(email, "Renew Subscription for Bookify", body);
+
+            //Send Welcome Message to Subscriber using WhatsApp Cloud Api
+            if (subscriber.HasWhatsApp)
+            {
+                // use New Created Template with Parameter in Meta WhatsApp Cloud Api and How Send Variables in it, While using "WhatsAppApiClient" Package by Elhelaly
+                var components = new List<WhatsAppComponent>()
+                {
+                    new WhatsAppComponent
+                    {
+                        Type = "body",
+                        Parameters = new List<object>()
+                        {
+                            new WhatsAppTextParameter { Text = $"{subscriber.FirstName} {subscriber.LastName}"},
+                            new WhatsAppTextParameter { Text = newSubscription.EndDate.ToString("dd MMM, yyyy")},
+                        }
+                    }
+                };
+
+                var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01094046114" : subscriber.MobileNumber;
+
+                await _whatsAppClient.SendMessage($"2{mobileNumber}",
+                                                        WhatsAppLanguageCode.English,
+                                                        WhatsAppTemplates.BookifyExtendSubscription,components);
+            }
+
+            var viewModel = _mapper.Map<SubscriptionViewModel>(newSubscription);
+
+            return PartialView("_SubscriptionRow", viewModel);
         }
 
         [AjaxOnly]

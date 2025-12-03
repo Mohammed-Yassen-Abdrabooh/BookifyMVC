@@ -18,5 +18,6 @@
         public bool IsBlackListed { get; set; }
         public bool IsDeleted { get; set; }
         public DateTime CreatedOn { get; set; }
+        public IEnumerable<SubscriptionViewModel> Subscriptions { get; set; } = new List<SubscriptionViewModel>();
     }
 }

@@ -36,6 +36,8 @@ namespace Bookify.Web.Core.Models
         public string Address { get; set; } = null!;
         public bool IsBlackListed { get; set; }
 
+        //Nav prop (one-to-many) to Subscription To Get All Subscriptions of This Subscriber
+        public ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
 
     }
 }
