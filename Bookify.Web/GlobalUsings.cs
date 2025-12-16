@@ -11,3 +11,5 @@ global using Microsoft.AspNetCore.Authorization;
 global using System.Security.Claims;
 global using Bookify.Web.Servieces;
 global using Bookify.Web.Settings;
+global using WhatsAppCloudApi;
+global using WhatsAppCloudApi.Services;

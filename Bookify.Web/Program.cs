@@ -2,6 +2,9 @@ using Bookify.Web.Core.Mapping;
 using Bookify.Web.Data;
 using Bookify.Web.Helpers;
 using Bookify.Web.Seeds;
+using Bookify.Web.Tasks;
+using Hangfire;
+using Hangfire.Dashboard;
 using Microsoft.AspNetCore.DataProtection;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Identity.UI.Services;
@@ -84,6 +87,19 @@ namespace Bookify.Web
             // Configure WhatsApp API Client Service This Package Created By Elhelaly
             builder.Services.AddWhatsAppApiClient(builder.Configuration);
 
+            // Add HangFire Package Services Configuration To do Background Jobs
+            builder.Services.AddHangfire(x => x.UseSqlServerStorage(connectionString));
+            builder.Services.AddHangfireServer();
+
+            // Configure Authorization Policy for Hangfire Dashboard but not only For Hangfire You Can Use it in any Controller or Action
+            // Yo Can Add it to anything in App not only used for Hangfire Dashboard , its only Example Apply this policy
+            builder.Services.Configure<AuthorizationOptions>(options => options.AddPolicy("AdminsOnly", policy =>
+            {
+                policy.RequireAuthenticatedUser();
+                policy.RequireRole(AppRoles.Admin);
+            }
+            ));
+
             var app = builder.Build();
 
             // Configure the HTTP request pipeline.
@@ -115,6 +131,26 @@ namespace Bookify.Web
             await DefaultRoles.SeedRolesAsync(roleManager);
             await DefaultUsers.SeedAdminUserAsync(userManager);
 
+            // Configure Hangfire Dashboard Middleware and Recurring Jobs To Prepare Expiration Alert This Method "PrepareExpirationAlert()" Exists in Tasks Folder at HangFireTasks.cs
+            app.UseHangfireDashboard("/hangfire", new DashboardOptions 
+            { 
+                DashboardTitle = "Bookify Dashboard",
+                IsReadOnlyFunc = (DashboardContext context) => true, // Make the Dashboard Read-Only
+                Authorization = new IDashboardAuthorizationFilter[]
+                {
+                    new HandfireAuthorizationFilter("AdminsOnly") // Only Admins Can Access Hangfire Dashboard
+                }
+            });
+            // To Run Recurring Job At The Application Start
+            var dbContext = scope.ServiceProvider.GetRequiredService<ApplicationDbContext>();
+            var webHostEnvironment = scope.ServiceProvider.GetRequiredService<IWebHostEnvironment>();
+            var whatsAppClient = scope.ServiceProvider.GetRequiredService<IWhatsAppClient>();
+            var emailBodyBuilder = scope.ServiceProvider.GetRequiredService<IEmailBodyBuilder>();
+            var emailSender = scope.ServiceProvider.GetRequiredService<IEmailSender>();
+            // The object of HangFireTasks to access the PrepareExpirationAlert method need All the dependencies to be injected
+            var hangFireTasks = new HangFireTasks(dbContext, webHostEnvironment, whatsAppClient, emailBodyBuilder, emailSender);
+
+            RecurringJob.AddOrUpdate("PrepareExpirationAlertJob", () => hangFireTasks.PrepareExpirationAlert(), "0 14 * * *"); // Daily at 2:00 PM =>From This Site To Learn Cron Expression => crontab.cronhub.io/
 
             app.MapControllerRoute(
                 name: "default",

@@ -5,7 +5,7 @@
 
     var lastSubscription = Model.Subscriptions.Last();
     var subscriberStatus = Model.IsBlackListed ? SubscriberStatus.Banned : lastSubscription.EndDate < DateTime.Today ? SubscriberStatus.Inactive : SubscriberStatus.Active;
-    var statusColor = Model.IsBlackListed ? "danger" : lastSubscription.EndDate < DateTime.Today ? "warning" : "success";
+    var  statusColor = Model.IsBlackListed ? "danger" : lastSubscription.EndDate < DateTime.Today ? "warning" : "success";
 }
 
 <div class="d-flex flex-column p-0 flex-column-fluid">

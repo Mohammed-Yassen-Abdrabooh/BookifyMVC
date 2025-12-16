@@ -1,15 +1,8 @@
-﻿using Bookify.Web.Core.Models;
+﻿using Hangfire;
 using Microsoft.AspNetCore.DataProtection;
-using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Identity.UI.Services;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using SixLabors.ImageSharp;
-using System.Text.Encodings.Web;
-using System.Threading.Tasks;
-using WhatsAppCloudApi;
-using WhatsAppCloudApi.Services;
 
 namespace Bookify.Web.Controllers
 {
@@ -38,6 +31,8 @@ namespace Bookify.Web.Controllers
             _emailBodyBuilder = emailBodyBuilder;
             _emailSender = emailSender;
         }
+
+        #region Index,Search,Details Actions
         public IActionResult Index()
         {
 
@@ -75,7 +70,9 @@ namespace Bookify.Web.Controllers
             viewModel.Key = id;
             return View(viewModel);
         }
+        #endregion
 
+        #region Create Get and Post
         [HttpGet]
         public IActionResult Create()
         {
@@ -132,13 +129,15 @@ namespace Bookify.Web.Controllers
             {
                 { "imageUrl" , "https://res.cloudinary.com/yassen-bookify/image/upload/v1761162282/icon-positive-vote-2_ts4kvu.jpeg" },
                 { "header" , $"Hello {model.FirstName} {model.LastName}" },
-                { "body" , "Welcome to Bookify , Your Profile Information has been Successfully Updated." }
+                { "body" , "Thanks for joining Bookify 🤩🤩" }
             };
 
             var body = _emailBodyBuilder.GetEmailBody(MailTemplates.Notification, placeholders);
             var email = _webHostEnvironment.IsDevelopment() ? "mohammedyassen.pc@gmail.com" : model.Email;
 
-            await _emailSender.SendEmailAsync(email, "Welcome To Bookify", body);
+            // Use Hangfire to Send Email in Background Job
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, "Welcome To Bookify", body));
+
 
             //Send Welcome Message to Subscriber using WhatsApp Cloud Api
             if (model.HasWhatsApp)
@@ -160,16 +159,18 @@ namespace Bookify.Web.Controllers
                 // This Not Work because WhatsApp Message Template Not Approved as Utility but Approved as Marketing so we must use "bookify_welcome_message" Template
                 // Then We Use The Default Template "hello_world" from Meta for Testing Purpose
                 // Now After Adding "message_bookify","bookify_subscriber_message" Which Created by ChatGPT and Approved as Utility Template We Can Use it Here
-                await _whatsAppClient.SendMessage($"2{mobileNumber}",
+                // Use Hangfire to Send WhatsApp Message in Background Job
+                BackgroundJob.Enqueue(() => _whatsAppClient.SendMessage($"2{mobileNumber}",
                                                         WhatsAppLanguageCode.English_US,
-                                                        WhatsAppTemplates.BookifyMessage, components);
-
+                                                        WhatsAppTemplates.BookifyMessage, components));
 
             }
             var subscriberId = _dataProtector.Protect(subscriber.Id.ToString());
             return RedirectToAction(nameof(Details), new { id = subscriberId });
         }
+        #endregion
 
+        #region Edit Get and Post
         public IActionResult Edit(string id)
         {
             var subscriberId = int.Parse(_dataProtector.Unprotect(id));
@@ -236,25 +237,27 @@ namespace Bookify.Web.Controllers
 
 
             _dbContext.SaveChanges();
-            return RedirectToAction(nameof(Index), new { id = model.Key  });
+            return RedirectToAction(nameof(Index), new { id = model.Key });
         }
+        #endregion
 
+        #region RenewSubscription Action
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> RenewSubscription(string sKey)
+        public IActionResult RenewSubscription(string sKey)
         {
             var subscriberId = int.Parse(_dataProtector.Unprotect(sKey));
 
-            var subscriber = _dbContext.Subscribers.Include(s=> s.Subscriptions).SingleOrDefault(s => s.Id == subscriberId);
+            var subscriber = _dbContext.Subscribers.Include(s => s.Subscriptions).SingleOrDefault(s => s.Id == subscriberId);
             if (subscriber is null)
                 return NotFound();
 
-            if(subscriber.IsBlackListed)
+            if (subscriber.IsBlackListed)
                 return BadRequest("Cannot Renew Subscription for BlackListed Subscriber.");
 
             var lastSubscription = subscriber.Subscriptions.Last();
 
-            var startDate =  lastSubscription.EndDate < DateTime.Today ? DateTime.Today : lastSubscription.EndDate.AddDays(1);
+            var startDate = lastSubscription.EndDate < DateTime.Today ? DateTime.Today : lastSubscription.EndDate.AddDays(1);
 
             Subscription newSubscription = new()
             {
@@ -280,38 +283,42 @@ namespace Bookify.Web.Controllers
 
             var body = _emailBodyBuilder.GetEmailBody(MailTemplates.Notification, placeholders);
             var email = _webHostEnvironment.IsDevelopment() ? "mohammedyassen.pc@gmail.com" : subscriber.Email;
+            // Use Hangfire to Send Email in Background Job
+            BackgroundJob.Enqueue(() => _emailSender.SendEmailAsync(email, "Renew Subscription for Bookify", body));
 
-            await _emailSender.SendEmailAsync(email, "Renew Subscription for Bookify", body);
+            // Use Hangfire to Schedule Email in Background Job after 1 Minute
+            //BackgroundJob.Schedule(() => _emailSender.SendEmailAsync(email, "Renew Subscription for Bookify", body),TimeSpan.FromMinutes(1));
 
             //Send Welcome Message to Subscriber using WhatsApp Cloud Api
             if (subscriber.HasWhatsApp)
             {
                 // use New Created Template with Parameter in Meta WhatsApp Cloud Api and How Send Variables in it, While using "WhatsAppApiClient" Package by Elhelaly
-                var components = new List<WhatsAppComponent>()
-                {
-                    new WhatsAppComponent
-                    {
-                        Type = "body",
-                        Parameters = new List<object>()
-                        {
-                            new WhatsAppTextParameter { Text = $"{subscriber.FirstName} {subscriber.LastName}"},
-                            new WhatsAppTextParameter { Text = newSubscription.EndDate.ToString("dd MMM, yyyy")},
-                        }
-                    }
-                };
+                //var components = new List<WhatsAppComponent>()
+                //{
+                //    new WhatsAppComponent
+                //    {
+                //        Type = "body",
+                //        Parameters = new List<object>()
+                //        {
+                //            new WhatsAppTextParameter { Text = $"{subscriber.FirstName} {subscriber.LastName}"},
+                //            new WhatsAppTextParameter { Text = newSubscription.EndDate.ToString("dd MMM, yyyy")},
+                //        }
+                //    }
+                //};
 
                 var mobileNumber = _webHostEnvironment.IsDevelopment() ? "01094046114" : subscriber.MobileNumber;
+                // Use Hangfire to Send WhatsApp Message in
+                BackgroundJob.Enqueue(() => _whatsAppClient.SendMessage($"2{mobileNumber}", WhatsAppLanguageCode.English, WhatsAppTemplates.BookifyRenewSubscription, null));
 
-                await _whatsAppClient.SendMessage($"2{mobileNumber}",
-                                                        WhatsAppLanguageCode.English,
-                                                        WhatsAppTemplates.BookifyExtendSubscription,components);
             }
 
             var viewModel = _mapper.Map<SubscriptionViewModel>(newSubscription);
 
             return PartialView("_SubscriptionRow", viewModel);
         }
+        #endregion
 
+        #region GetAreas for Government
         [AjaxOnly]
         public IActionResult GetAreas(int governorateId)
         {
@@ -325,10 +332,13 @@ namespace Bookify.Web.Controllers
                 .ToList();
             return Ok(areas);
         }
+        #endregion
+
+        #region Validations Action For SubscriberFormViewModel To Not Add Dupplicate Values To NationalId,MobileNumber,Email
         public IActionResult AllowNationalId(SubscriberFormViewModel model)
         {
             var subscriberId = 0;
-            if(!string.IsNullOrEmpty(model.Key))
+            if (!string.IsNullOrEmpty(model.Key))
                 subscriberId = int.Parse(_dataProtector.Unprotect(model.Key));
 
 
@@ -359,6 +369,10 @@ namespace Bookify.Web.Controllers
 
             return Json(isAllowed); // Return true if the category name does not exist, false otherwise
         }
+        #endregion
+
+
+
 
         private SubscriberFormViewModel PopulateViewModel(SubscriberFormViewModel? model = null)
         {
