@@ -1,4 +1,5 @@
 ﻿global using AutoMapper;
+global using Bookify.Web.Core.Enums;
 global using Bookify.Web.Core.Consts;
 global using Bookify.Web.Core.Models;
 global using Bookify.Web.Core.ViewModels;

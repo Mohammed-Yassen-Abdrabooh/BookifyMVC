@@ -14,8 +14,10 @@ namespace Bookify.Web.Data
         public DbSet<Book> Books { get; set; }
         public DbSet<BookCategory> BookCategories { get; set; }
         public DbSet<BookCopy> BookCopies { get; set; }
-        public DbSet<Governorate> Governorates { get; set; }
         public DbSet<Category> Categories { get; set; }
+        public DbSet<Governorate> Governorates { get; set; }
+        public DbSet<Rental> Rentals { get; set; }
+        public DbSet<RentalCopy> RentalCopies { get; set; }
         public DbSet<Subscriber> Subscribers { get; set; }
         public DbSet<Subscription> Subscriptions { get; set; }
 
@@ -36,6 +38,9 @@ namespace Bookify.Web.Data
                 .Where(fk => fk.DeleteBehavior == DeleteBehavior.Cascade && !fk.IsOwnership  );
             foreach(var fk in cascadeFKs)
                 fk.DeleteBehavior = DeleteBehavior.Restrict;
+
+            // Configure Composite Key for RentalCopy
+            builder.Entity<RentalCopy>().HasKey(e => new { e.RentalId, e.BookCopyId });// Composite Key for RentalCopy
 
             base.OnModelCreating(builder);
         }

@@ -38,6 +38,7 @@ namespace Bookify.Web.Core.Models
 
         //Nav prop (one-to-many) to Subscription To Get All Subscriptions of This Subscriber
         public ICollection<Subscription> Subscriptions { get; set; } = new List<Subscription>();
+        public ICollection<Rental> Rentals { get; set; } = new List<Rental>();
 
     }
 }

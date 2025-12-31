@@ -24,6 +24,8 @@
         public const string DuplicatedMobileNumberError = "Another Subscriber Has This Mobile Number.";
         public const string DuplicatedEmailError = "Another Subscriber Has This Email.";
         public const string EmptyImageError = "Must Use an Image For You.";
+        public const string InvalidSerialNumber = "Invalid Serial Number.";
+        public const string NotAvailableRental = "This Book/Copy is Not Available for Rental.";
 
 
 

@@ -167,7 +167,7 @@
                                         <div class="card-header border-0">
                                             <!--begin::Card title-->
                                             <div class="card-title">
-                                                <h2 class="fw-bold">Reward Points</h2>
+                                                <h2 class="fw-bold"># of Rentals</h2>
                                             </div>
                                             <!--end::Card title-->
                                         </div>
@@ -184,11 +184,10 @@
                                                     </span>
                                                     <!--end::Svg Icon-->
                                                     <div class="ms-2">
-                                                        4,571
-                                                        <span class="text-muted fs-4 fw-semibold">Points earned</span>
+                                                        @Model.Rentals.Sum(r => r.NumberOfCopies)
                                                     </div>
                                                 </div>
-                                                <div class="fs-7 fw-normal text-muted">Earn reward points with every purchase.</div>
+                                                <div class="fs-7 fw-normal text-muted">Total numbers of copies.</div>
                                             </div>
                                         </div>
                                         <!--end::Card body-->
@@ -290,28 +289,42 @@
                             <!--end::Card-->
                         </div>
                         <!--end:::Tab pane-->
-                        <!--begin:::Tab pane-->
+                        <!--begin:::Rentaaaaaaal Tab pane-->
                         <div class="tab-pane fade" id="Rentals" role="tabpanel">
                             <!--begin::Card-->
                             <div class="card pt-4 mb-6 mb-xl-9">
                                 <!--begin::Card header-->
-                                <div class="card-header border-0">
-                                    <!--begin::Card title-->
-                                    <div class="card-title">
-                                        <h2>Rentals</h2>
-                                    </div>
-                                    <!--end::Card title-->
+                                <div class="card-header border-0 pt-5">
+                                    <h3 class="card-title align-items-start flex-column">
+                                        <span class="card-label fw-bold fs-3 mb-1">Rentals</span>
+                                    </h3>
+                                    @if (!Model.IsBlackListed && lastSubscription.EndDate > DateTime.Today.AddDays((int) RentalsConfiguration.RentalDurationInDays))
+                                    {
+                                        <div class="card-toolbar">
+                                            <a asp-controller="Rental" asp-action="Create" asp-route-sKey="@Model.Key" class="btn btn-sm btn-light-primary">
+                                                <!--begin::Svg icon For Renew-->
+                                                <span class="svg-icon svg-icon-2">
+                                                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                                        <rect opacity="0.5" x="11" y="18" width="12" height="2" rx="1" transform="rotate(-90 11 18)" fill="currentColor" />
+                                                        <rect x="6" y="11" width="12" height="2" rx="1" fill="currentColor" />
+                                                    </svg>
+                                                </span>
+                                                <!--End::Svg icon For Renew-->
+                                                Renew
+                                            </a>
+                                        </div>
+                                    }
                                 </div>
                                 <!--end::Card header-->
                                 <!--begin::Card body-->
                                 <div class="card-body pt-0 pb-5">
-                                    Rentals will be shown here
+                                    <partial name="_Rentals" model="Model.Rentals" />
                                 </div>
                                 <!--end::Card body-->
                             </div>
                             <!--end::Card-->
                         </div>
-                        <!--end:::Tab pane-->
+                        <!--end:::Rentaaaaaaaaal Tab pane-->
                     </div>
                     <!--end:::Tab content-->
                 </div>
