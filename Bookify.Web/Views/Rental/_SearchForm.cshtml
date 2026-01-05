@@ -25,8 +25,18 @@
         <!--end::Input group-->
         <!--begin:Action-->
         <div class="d-flex align-items-center">
-            <button type="submit" class="btn btn-primary me-5 js-search" fdprocessedid="8oxejb">Search</button>
+            <!--begin::Submit Btn Using Loading Spinner-->
+            <button type="submit" class="btn btn-primary js-search">
+                <span class="indicator-label">
+                    Search
+                </span>
+                <span class="indicator-progress">
+                    Please wait... <span class="spinner-border spinner-border-sm align-middle ms-2"></span>
+                </span>
+            </button>
+            <!--End::Submit Btn Using Loading Spinner-->
         </div>
+
         <!--end:Action-->
     </div>
     <!--end::Compact form-->

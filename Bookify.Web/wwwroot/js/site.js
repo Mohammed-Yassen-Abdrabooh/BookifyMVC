@@ -38,13 +38,13 @@ function ShowErrorMessage(msg = "Something went wrong!") {
         }
     });
 }
-function DisableSubmitButton() {
-    $('body :submit').attr('disabled', 'disabled').attr("data-kt-indicator", "on"); // Disable all submit buttons to prevent multiple submissions
+function DisableSubmitButton(btn) {
+    $(btn).attr('disabled', 'disabled').attr("data-kt-indicator", "on"); // Disable all submit buttons to prevent multiple submissions
 }
 
 function OnModalBegin() {
 
-    DisableSubmitButton();
+    DisableSubmitButton($('#Modal').find(":submit"));
 }
 function OnModalSuccess(row) {
 
@@ -200,7 +200,7 @@ $(document).ready(function () {
         }
         var isValid = $(this).valid();
         if (isValid)
-            DisableSubmitButton(); 
+            DisableSubmitButton($(this).find(':submit')); 
 
     })
     // Select2 Library ==>(Add Code in Function Above) is used for enhancing select elements with search functionality use in BookModule To Show (Authors,Categories)

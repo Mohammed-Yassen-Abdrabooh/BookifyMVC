@@ -12,12 +12,19 @@ $(document).ready(function () {
         }
 
         if (selectedCopies.length >= maxAllowedCopies) {
-            ShowErrorMessage(`You cannot add more than ${maxAllowedCopies} books.`);
+            ShowErrorMessage(`You cannot add more than ${maxAllowedCopies} book(s).`);
             return;
         }
 
         $("#SearchForm").submit();
     });
+
+    $('body').delegate('.js-remove', 'click', function () {
+        $(this).parents(".js-copy-container").remove();
+        prepareInput();
+        if ($.isEmptyObject(selectedCopies))
+            $("#CopiesFormForCreateNewRental").find(":submit").addClass("d-none");
+    })
 });
 
 function OnAddCopySuccess(copy) {
@@ -29,12 +36,18 @@ function OnAddCopySuccess(copy) {
         return;
     }
     $("#CopiesFormForCreateNewRental").prepend(copy);
+    $("#CopiesFormForCreateNewRental").find(":submit").removeClass("d-none");
 
+    prepareInput();
+
+}
+
+function prepareInput() {
     var copy = $(".js-copy");
     selectedCopies = [];
     $.each(copy, function (i, input) {
         var $input = $(input);
-        selectedCopies.push({ serial: $input.val(), BookId: $input.data("book-id")});
+        selectedCopies.push({ serial: $input.val(), BookId: $input.data("book-id") });
         $input.attr("name", `SelectedCopies[${i}]`).attr("id", `SelectedCopies_${i}_`);
 
     });

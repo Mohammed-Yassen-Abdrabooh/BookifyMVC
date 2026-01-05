@@ -26,6 +26,11 @@
         public const string EmptyImageError = "Must Use an Image For You.";
         public const string InvalidSerialNumber = "Invalid Serial Number.";
         public const string NotAvailableRental = "This Book/Copy is Not Available for Rental.";
+        public const string EmptyImage = "Please select an image.";
+        public const string BlackListedSubscriber = "This subscriber is blacklisted.";
+        public const string InActiveSubscriber = "This subscriber is inactive.";
+        public const string MaxCopiesReached = "This subscriber has reached the max number for rentals.";
+        public const string CopyIsInRental = "This Copy is already rentaled.";
 
 
 

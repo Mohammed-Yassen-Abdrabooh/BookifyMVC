@@ -26,7 +26,7 @@
         <div class="card-header border-0 pt-5">
             <h3 class="card-title align-items-start flex-column">
                 <span class="card-label fw-bold text-gray-900">Books</span>
-                <span class="text-muted mt-1 fw-semibold fs-7">You can add up to @((int) RentalsConfiguration.MaxNumberOfCopiesPerRental) books</span>
+                <span class="text-muted mt-1 fw-semibold fs-7">You can add up to @Model.MaxAllowedCopies book(s)</span>
             </h3>
         </div>
         <!--end::Header-->
@@ -36,7 +36,7 @@
                 <input type="hidden" asp-for="SubscriberKey"/>
                 @*Copies Will be Added Here*@ <!--I'm No Rendered Partial View Here Because i Will PreAppend The Row Usg JQ in rentalForm.js-->
                 <!--begin::Submit Btn Using Loading Spinner-->
-                <button type="submit" class="btn btn-primary">
+                <button type="submit" class="btn btn-primary d-none">
                     <span class="indicator-label">
                         Save
                     </span>
@@ -58,7 +58,7 @@
 @section Scripts {
     <partial name="_ValidationScriptsPartial"/>
     <script>
-        var maxAllowedCopies = @((int)RentalsConfiguration.MaxNumberOfCopiesPerRental);
+        var maxAllowedCopies = @Model.MaxAllowedCopies;
     </script>
     <script src="~/js/rentalform.js" asp-append-version="true"></script>
 }
